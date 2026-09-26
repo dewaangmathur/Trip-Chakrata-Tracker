@@ -1,157 +1,284 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
   <title>Trip Chakrata Tracker ✈️</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏔️</text></svg>"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css"/>
 </head>
 <body>
 
-<!-- NAV -->
-<nav class="nav">
-  <div class="nav-inner">
-    <div class="logo">
-      <span class="logo-icon">✈️</span>
-      <span class="logo-text">Trip Chakrata</span>
+<!-- ══════════════ LOGIN PAGE ══════════════ -->
+<div id="loginPage" class="login-page">
+  <div class="login-card">
+    <div class="login-hero">
+      <div class="login-mountain">🏔️</div>
+      <h1 class="login-title">Chakrata 2026</h1>
+      <p class="login-sub">Trip expense tracker for the squad</p>
     </div>
-    <div class="nav-tabs" id="navTabs">
-      <button class="tab-btn active" data-tab="expenses">💸 Expenses</button>
-      <button class="tab-btn" data-tab="settle">🤝 Settle Up</button>
-    </div>
-    <div class="trip-badge" id="tripBadge">
-      <span id="tripNameDisplay">Loading…</span>
+
+    <p class="login-label">Who are you?</p>
+    <div class="member-select-grid" id="memberSelectGrid"></div>
+
+    <div class="pin-section" id="pinSection" style="display:none">
+      <p class="login-label">Enter your PIN</p>
+      <div class="pin-row" id="pinRow">
+        <input class="pin-input" type="password" maxlength="1" inputmode="numeric"/>
+        <input class="pin-input" type="password" maxlength="1" inputmode="numeric"/>
+        <input class="pin-input" type="password" maxlength="1" inputmode="numeric"/>
+        <input class="pin-input" type="password" maxlength="1" inputmode="numeric"/>
+      </div>
+      <p class="pin-error" id="pinError"></p>
+      <button class="btn-primary full" id="loginBtn" onclick="doLogin()">Enter the trip →</button>
     </div>
   </div>
-</nav>
+</div>
 
-<!-- MAIN -->
-<main class="main">
+<!-- ══════════════ APP SHELL ══════════════ -->
+<div id="appShell" style="display:none">
 
-  <!-- ───── EXPENSES TAB ───── -->
-  <section class="tab-panel active" id="tab-expenses">
-
-    <!-- Day Timeline Header -->
-    <div class="day-strip" id="dayStrip">
-      <button class="day-pill active" data-day="all">All</button>
-      <button class="day-pill" data-day="pre">Pre-Trip</button>
-      <button class="day-pill" data-day="Day 1">Day 1</button>
-      <button class="day-pill" data-day="Day 2">Day 2</button>
-      <button class="day-pill" data-day="Day 3">Day 3</button>
-      <button class="day-pill" data-day="Day 4">Day 4</button>
-      <button class="day-pill" data-day="Day 5">Day 5</button>
-      <button class="day-pill" data-day="Hotel">🏨 Hotel</button>
-      <button class="day-pill" data-day="custom">+ Day</button>
-    </div>
-
-    <div class="two-col">
-      <!-- LEFT: Add Expense -->
-      <div class="panel">
-        <h2 class="panel-title">Add Expense</h2>
-
-        <label class="field-label">What's this for? <span class="req">*</span></label>
-        <input type="text" id="expDesc" placeholder="e.g. Dinner at Haridwar dhaba" class="field-input" />
-
-        <label class="field-label">Amount (₹) <span class="req">*</span></label>
-        <input type="number" id="expAmt" placeholder="0" min="0" class="field-input" />
-
-        <label class="field-label">Paid by</label>
-        <div class="payer-grid" id="payerGrid"></div>
-
-        <label class="field-label">Split between</label>
-        <button class="pill-btn secondary small" onclick="selectAllParticipants()">Select All</button>
-        <div class="member-chips" id="participantChips"></div>
-
-        <label class="field-label">Day / Category</label>
-        <div class="tag-row" id="dayTagRow">
-          <label class="tag-chip"><input type="radio" name="expDay" value="pre" /> Pre-Trip</label>
-          <label class="tag-chip"><input type="radio" name="expDay" value="Day 1" checked /> Day 1</label>
-          <label class="tag-chip"><input type="radio" name="expDay" value="Day 2" /> Day 2</label>
-          <label class="tag-chip"><input type="radio" name="expDay" value="Day 3" /> Day 3</label>
-          <label class="tag-chip"><input type="radio" name="expDay" value="Day 4" /> Day 4</label>
-          <label class="tag-chip"><input type="radio" name="expDay" value="Day 5" /> Day 5</label>
-          <label class="tag-chip hotel"><input type="radio" name="expDay" value="Hotel" /> 🏨 Hotel</label>
-          <label class="tag-chip custom-tag-label" id="customTagLabel" style="display:none"><input type="radio" name="expDay" id="customDayRadio" value="" /> <span id="customDayLabelText">Custom</span></label>
-        </div>
-
-        <label class="field-label">Category tag</label>
-        <div class="tag-row" id="catTagRow">
-          <label class="tag-chip"><input type="radio" name="expCat" value="🍔 Food" checked /> 🍔 Food</label>
-          <label class="tag-chip"><input type="radio" name="expCat" value="🚗 Transport" /> 🚗 Transport</label>
-          <label class="tag-chip"><input type="radio" name="expCat" value="🏨 Hotel" /> 🏨 Hotel</label>
-          <label class="tag-chip"><input type="radio" name="expCat" value="🎯 Activity" /> 🎯 Activity</label>
-          <label class="tag-chip"><input type="radio" name="expCat" value="🛒 Shopping" /> 🛒 Shopping</label>
-          <label class="tag-chip"><input type="radio" name="expCat" value="💊 Medical" /> 💊 Medical</label>
-          <label class="tag-chip"><input type="radio" name="expCat" value="📦 Other" /> 📦 Other</label>
-        </div>
-
-        <label class="field-label">Date (optional)</label>
-        <input type="date" id="expDate" class="field-input" />
-
-        <button class="pill-btn primary full" onclick="addExpense()">Add Expense ➕</button>
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="logo">
+        <span>🏔️</span>
+        <span class="logo-text">Chakrata</span>
       </div>
-
-      <!-- RIGHT: Expense Feed -->
-      <div class="panel">
-        <div class="panel-title-row">
-          <h2 class="panel-title">Expense Feed</h2>
-          <div class="total-chip" id="totalChip">Total: ₹0</div>
-        </div>
-        <div id="expenseFeed" class="expense-feed">
-          <div class="empty-state">No expenses yet. Add your first one! 🧾</div>
-        </div>
+      <div class="nav-tabs">
+        <button class="tab-btn active" data-tab="home">🏠 Home</button>
+        <button class="tab-btn" data-tab="expenses">💸 Expenses</button>
+        <button class="tab-btn" data-tab="settle">🤝 Settle</button>
+      </div>
+      <div class="nav-user" id="navUser">
+        <span class="user-avatar" id="navAvatar"></span>
+        <span id="navName"></span>
+        <button class="logout-btn" onclick="logout()">⏏</button>
       </div>
     </div>
+  </nav>
 
-  </section>
+  <main class="main">
 
-  <!-- ───── SETTLE TAB ───── -->
-  <section class="tab-panel" id="tab-settle">
-    <div class="two-col">
+    <!-- ──────── HOME TAB ──────── -->
+    <section class="tab-panel active" id="tab-home">
 
-      <!-- LEFT: Summary -->
-      <div class="panel">
-        <h2 class="panel-title">💰 Who Owes What</h2>
-        <div id="balanceSummary" class="balance-grid">
-          <div class="empty-state">Hit "Calculate" to see balances.</div>
-        </div>
-        <button class="pill-btn primary full" style="margin-top:18px" onclick="calculateSettlement()">Calculate Settlement 🧮</button>
-      </div>
-
-      <!-- RIGHT: Transactions -->
-      <div class="panel">
-        <h2 class="panel-title">🤝 Final Transactions</h2>
-        <div id="settlementResult" class="settlement-list">
-          <div class="empty-state">Settlement transactions will appear here.</div>
-        </div>
-        <div id="receiptActions" style="display:none;gap:10px;margin-top:16px" class="btn-row">
-          <button class="pill-btn secondary" onclick="copySettlement()">📋 Copy</button>
-          <button class="pill-btn secondary" onclick="shareSettlement()">📤 Share</button>
+      <div class="home-hero">
+        <div class="home-stats-row">
+          <div class="stat-box">
+            <div class="stat-num" id="homeTotalAmt">₹0</div>
+            <div class="stat-label">Total Spent</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num" id="homeTotalExp">0</div>
+            <div class="stat-label">Expenses</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num" id="homeMyShare">₹0</div>
+            <div class="stat-label">Your Share</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num" id="homeMyNet" style="font-size:22px">₹0</div>
+            <div class="stat-label" id="homeMyNetLabel">Your Balance</div>
+          </div>
         </div>
       </div>
 
+      <!-- Who paid summary -->
+      <div class="section-title">💰 Who Paid What</div>
+      <div class="paid-summary-grid" id="paidSummaryGrid"></div>
+
+      <!-- Recent activity -->
+      <div class="section-title" style="margin-top:28px">🕐 Recent Activity</div>
+      <div class="activity-feed" id="activityFeed"></div>
+
+    </section>
+
+    <!-- ──────── EXPENSES TAB ──────── -->
+    <section class="tab-panel" id="tab-expenses">
+
+      <!-- Day filter strip -->
+      <div class="day-strip" id="dayStrip">
+        <button class="day-pill active" data-day="all">All</button>
+        <button class="day-pill" data-day="Pre-Trip">Pre-Trip</button>
+        <button class="day-pill" data-day="Day 1">Day 1</button>
+        <button class="day-pill" data-day="Day 2">Day 2</button>
+        <button class="day-pill" data-day="Day 3">Day 3</button>
+        <button class="day-pill" data-day="Day 4">Day 4</button>
+        <button class="day-pill" data-day="Day 5">Day 5</button>
+        <button class="day-pill hotel-pill" data-day="Hotel">🏨 Hotel</button>
+        <button class="day-pill add-day-pill" data-day="__add__">＋</button>
+      </div>
+
+      <div class="two-col">
+        <!-- ADD EXPENSE FORM -->
+        <div class="panel">
+          <h2 class="panel-title">Add Expense</h2>
+
+          <!-- Description -->
+          <label class="field-label">What's this for? <span class="req">*</span></label>
+          <input type="text" id="expDesc" class="field-input" placeholder="e.g. Dinner at Haridwar dhaba"/>
+
+          <!-- Amount -->
+          <label class="field-label">Amount (₹) <span class="req">*</span></label>
+          <input type="number" id="expAmt" class="field-input" placeholder="0" min="0"/>
+
+          <!-- Paid by — auto shows logged-in user, but can change -->
+          <label class="field-label">Paid by</label>
+          <select id="expPaidBy" class="field-input field-select">
+            <!-- filled by JS -->
+          </select>
+
+          <!-- Split between -->
+          <label class="field-label">Split between</label>
+          <div class="split-actions">
+            <button class="chip-action" onclick="selectAll()">All</button>
+            <button class="chip-action" onclick="selectNone()">None</button>
+            <button class="chip-action" onclick="selectOthers()">Others</button>
+          </div>
+          <div class="member-chips" id="participantChips"></div>
+
+          <!-- Day -->
+          <label class="field-label">Day</label>
+          <select id="expDay" class="field-input field-select">
+            <option value="Pre-Trip">Pre-Trip</option>
+            <option value="Day 1" selected>Day 1</option>
+            <option value="Day 2">Day 2</option>
+            <option value="Day 3">Day 3</option>
+            <option value="Day 4">Day 4</option>
+            <option value="Day 5">Day 5</option>
+            <option value="Hotel">🏨 Hotel</option>
+          </select>
+
+          <!-- Category -->
+          <label class="field-label">Category</label>
+          <div class="cat-grid" id="catGrid">
+            <button class="cat-btn active" data-cat="🍔 Food">🍔 Food</button>
+            <button class="cat-btn" data-cat="🚗 Transport">🚗 Transport</button>
+            <button class="cat-btn" data-cat="🏨 Hotel">🏨 Hotel</button>
+            <button class="cat-btn" data-cat="🎯 Activity">🎯 Activity</button>
+            <button class="cat-btn" data-cat="🛒 Shopping">🛒 Shopping</button>
+            <button class="cat-btn" data-cat="💊 Medical">💊 Medical</button>
+            <button class="cat-btn" data-cat="📦 Other">📦 Other</button>
+          </div>
+
+          <!-- Custom tags -->
+          <label class="field-label">Custom Tags <span class="muted-text">(optional)</span></label>
+          <div class="tag-input-row">
+            <input type="text" id="customTagInput" class="field-input" placeholder="e.g. snacks, petrol split…" style="flex:1"/>
+            <button class="btn-icon" onclick="addCustomTag()">＋</button>
+          </div>
+          <div class="custom-tags-row" id="customTagsRow"></div>
+
+          <!-- Date -->
+          <label class="field-label">Date</label>
+          <input type="date" id="expDate" class="field-input"/>
+
+          <button class="btn-primary full" onclick="addExpense()">Add Expense ➕</button>
+        </div>
+
+        <!-- EXPENSE FEED -->
+        <div class="panel">
+          <div class="panel-title-row">
+            <h2 class="panel-title">Expenses</h2>
+            <div class="total-chip" id="totalChip">Total: ₹0</div>
+          </div>
+          <div id="expenseFeed" class="expense-feed">
+            <div class="empty-state">No expenses yet 🧾</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAID TO SECTION -->
+      <div class="panel" style="margin-top:20px">
+        <h2 class="panel-title">💳 Direct Payment <span class="muted-text" style="font-size:13px;font-weight:400">— I paid someone directly</span></h2>
+        <div class="three-col">
+          <div>
+            <label class="field-label">From (you)</label>
+            <select id="ptFrom" class="field-input field-select"></select>
+          </div>
+          <div>
+            <label class="field-label">Paid to</label>
+            <select id="ptTo" class="field-input field-select"></select>
+          </div>
+          <div>
+            <label class="field-label">Amount (₹)</label>
+            <input type="number" id="ptAmt" class="field-input" placeholder="0" min="0"/>
+          </div>
+        </div>
+        <div style="margin-top:10px">
+          <label class="field-label">Reason <span class="req">*</span></label>
+          <input type="text" id="ptDesc" class="field-input" placeholder="e.g. Returning Saloni's petrol money"/>
+        </div>
+        <button class="btn-primary" style="margin-top:12px" onclick="addDirectPayment()">Record Payment 💳</button>
+      </div>
+
+    </section>
+
+    <!-- ──────── SETTLE TAB ──────── -->
+    <section class="tab-panel" id="tab-settle">
+      <div class="two-col">
+        <div class="panel">
+          <h2 class="panel-title">💰 Net Balances</h2>
+          <div id="balanceSummary" class="balance-grid">
+            <div class="empty-state">Hit Calculate to see balances.</div>
+          </div>
+          <button class="btn-primary full" style="margin-top:16px" onclick="calculateSettlement()">Calculate 🧮</button>
+        </div>
+        <div class="panel">
+          <h2 class="panel-title">🤝 Who Pays Whom</h2>
+          <div id="settlementResult" class="settlement-list">
+            <div class="empty-state">Calculate to see transactions.</div>
+          </div>
+          <div id="receiptActions" style="display:none;gap:10px;margin-top:16px" class="btn-row">
+            <button class="btn-secondary" onclick="copySettlement()">📋 Copy</button>
+            <button class="btn-secondary" onclick="shareSettlement()">📤 Share</button>
+          </div>
+        </div>
+      </div>
+      <div class="panel" style="margin-top:20px">
+        <h2 class="panel-title">📊 Per-Person Breakdown</h2>
+        <div id="personBreakdown" class="person-grid"></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-bg" id="editModal" style="display:none">
+  <div class="modal">
+    <h3 class="modal-title">Edit Expense</h3>
+    <label class="field-label">Description</label>
+    <input type="text" id="editDesc" class="field-input"/>
+    <label class="field-label">Amount (₹)</label>
+    <input type="number" id="editAmt" class="field-input"/>
+    <label class="field-label">Day</label>
+    <select id="editDay" class="field-input field-select">
+      <option>Pre-Trip</option><option>Day 1</option><option>Day 2</option>
+      <option>Day 3</option><option>Day 4</option><option>Day 5</option><option>Hotel</option>
+    </select>
+    <label class="field-label">Category</label>
+    <select id="editCat" class="field-input field-select">
+      <option>🍔 Food</option><option>🚗 Transport</option><option>🏨 Hotel</option>
+      <option>🎯 Activity</option><option>🛒 Shopping</option><option>💊 Medical</option><option>📦 Other</option>
+    </select>
+    <div class="btn-row" style="margin-top:16px">
+      <button class="btn-secondary" onclick="closeEdit()">Cancel</button>
+      <button class="btn-primary" onclick="saveEdit()">Save Changes</button>
     </div>
-
-    <!-- Per-person breakdown -->
-    <div class="panel" style="margin-top:20px">
-      <h2 class="panel-title">📊 Per-Person Breakdown</h2>
-      <div id="personBreakdown" class="person-grid"></div>
-    </div>
-
-  </section>
-
-</main>
+  </div>
+</div>
 
 <!-- CUSTOM DAY MODAL -->
 <div class="modal-bg" id="customDayModal" style="display:none">
   <div class="modal">
     <h3 class="modal-title">Add Custom Day</h3>
-    <input type="text" id="customDayInput" placeholder="e.g. Day 6, Return Day…" class="field-input" />
+    <input type="text" id="customDayInput" class="field-input" placeholder="e.g. Day 6, Return Day…"/>
     <div class="btn-row" style="margin-top:14px">
-      <button class="pill-btn secondary" onclick="closeCustomDay()">Cancel</button>
-      <button class="pill-btn primary" onclick="saveCustomDay()">Add Day</button>
+      <button class="btn-secondary" onclick="closeCustomDay()">Cancel</button>
+      <button class="btn-primary" onclick="saveCustomDay()">Add</button>
     </div>
   </div>
 </div>
