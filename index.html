@@ -189,9 +189,107 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .c7{background:rgba(244,114,182,0.2);color:#F472B6}
 .c8{background:rgba(52,211,153,0.2);color:#34D399}
 
+/* ── MOBILE ── */
 @media(max-width:600px){
-  .nav-inner{gap:5px}.tab-btn{padding:6px 10px;font-size:11px}
-  .content{padding:0 12px}.sec-body{padding:14px 14px}
+  /* Nav — scrollable tabs */
+  .nav-inner{padding:0 10px;gap:6px;height:50px}
+  .logo{font-size:14px}
+  .nav-tabs-wrap{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .nav-tabs-wrap::-webkit-scrollbar{display:none}
+  .tab-btn{padding:6px 12px;font-size:11px;white-space:nowrap;flex-shrink:0}
+
+  /* Content */
+  .content{padding:0 10px;gap:16px}
+  .sec-body{padding:12px 12px}
+  .sec-head{padding:14px 14px 10px}
+
+  /* Hero */
+  .hero{padding:32px 14px 28px}
+  .hero-icon{font-size:36px;margin-bottom:10px}
+  .stats-wrap{padding:0 10px}
+
+  /* Expense rows — stack amount below */
+  .exp-row{flex-wrap:wrap;gap:8px}
+  .exp-icon{width:28px;height:28px;font-size:12px}
+  .exp-amt{margin-left:36px;font-size:13px}
+
+  /* Shares grid — 2 cols */
+  .shares-grid{grid-template-columns:1fr 1fr}
+  .share-amt{font-size:16px}
+
+  /* Paid bars — tighter */
+  .paid-name{width:56px;font-size:12px}
+  .paid-val{width:60px;font-size:11px}
+  .paid-pct{width:28px;font-size:10px}
+
+  /* Receipt — key fixes */
+  .receipt-banner{padding:14px 14px;gap:10px}
+  .receipt-banner-icon{font-size:22px}
+  .receipt-banner-title{font-size:14px}
+  .receipt-banner-sub{font-size:11px}
+  .receipt-body{padding:12px 10px 10px}
+
+  /* Hide col labels on mobile, let rows speak */
+  .receipt-col-labels{display:none}
+
+  /* Transaction rows — stack into 2 lines */
+  .txn-row{
+    flex-wrap:wrap;
+    gap:6px;
+    padding:10px 10px;
+  }
+  .txn-from{
+    width:auto;
+    font-size:13px;
+    flex-shrink:0;
+  }
+  .txn-arrow{width:16px;font-size:14px}
+  .txn-to{font-size:13px;flex:1;min-width:60px}
+  .txn-src{flex-shrink:0}
+  .txn-amt{
+    font-size:14px;
+    padding:3px 9px;
+    margin-left:auto;
+  }
+
+  /* Receipt section labels */
+  .receipt-section-label{font-size:10px;margin:10px 0 6px}
+
+  /* Receipt summary 3 boxes → stack */
+  .receipt-summary{grid-template-columns:1fr;gap:8px}
+  .rsumbox{padding:10px}
+  .rsumbox-n{font-size:15px}
+
+  /* Summary boxes */
+  .sum-grid{grid-template-columns:1fr}
+  .sum-box-amt{font-size:22px}
+
+  /* Ledger table — scrollable */
+  .ledger-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -12px;padding:0 12px}
+  .ledger-table{min-width:380px;font-size:12px}
+  .ledger-table th,.ledger-table td{padding:8px 8px}
+  .pcell{gap:6px}
+  .av{width:22px;height:22px;font-size:9px}
+
+  /* Per-person v2 cards */
+  .ps2-head{padding:13px 14px;gap:10px}
+  .ps2-av{width:34px;height:34px;font-size:13px}
+  .ps2-name{font-size:14px}
+  .ps2-sub{font-size:11px}
+  .ps2-badge{font-size:14px}
+  .ps2-body{padding:0 14px 12px}
+  .ps2-item{padding:8px 10px;gap:8px}
+  .ps2-arrow{font-size:14px}
+  .ps2-person{font-size:12px}
+  .ps2-reason{font-size:10px}
+  .ps2-amt{font-size:13px}
+  .ps2-net{padding:9px 12px}
+  .ps2-net-label{font-size:11px}
+  .ps2-net-amt{font-size:16px}
+
+  /* Ongoing new txn rows */
+  .exp-who{font-size:10px}
+  .exp-who span{font-size:11px}
 }
 </style>
 </head>
@@ -200,9 +298,11 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 <nav class="nav">
   <div class="nav-inner">
     <div class="logo">🏔️ Hisaab</div>
-    <button class="tab-btn active"   onclick="go('p1',this)">🏔️ Chakrata</button>
-    <button class="tab-btn g"        onclick="go('p2',this)">🔄 Ongoing</button>
-    <button class="tab-btn y"        onclick="go('p3',this)">⚡ Final</button>
+    <div class="nav-tabs-wrap">
+      <button class="tab-btn active" onclick="go('p1',this)">🏔️ Chakrata</button>
+      <button class="tab-btn g"      onclick="go('p2',this)">🔄 Ongoing</button>
+      <button class="tab-btn y"      onclick="go('p3',this)">⚡ Final</button>
+    </div>
   </div>
 </nav>
 
