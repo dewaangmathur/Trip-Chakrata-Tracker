@@ -2,310 +2,1032 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-<title>Trip Chakrata Tracker 🏔️</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏔️</text></svg>"/>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="css/style.css"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Hisaab Central 🏔️</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<style>
+:root{
+  --bg:#07090d;--s1:#0d1117;--s2:#131920;--s3:#1a2230;
+  --border:#1e2a38;--border2:#253040;
+  --green:#22d3a5;--blue:#4f8ef7;--yellow:#f59e0b;--red:#f87171;--purple:#a78bfa;--pink:#f472b6;
+  --text:#e2e8f0;--text2:#94a3b8;--text3:#4a5568;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:0 0 80px}
+
+/* PAGE NAV */
+.page-nav{display:flex;align-items:center;justify-content:center;gap:6px;padding:12px 16px;position:sticky;top:0;z-index:200;background:rgba(7,9,13,0.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);flex-wrap:wrap}
+.page-tab{padding:8px 18px;border-radius:10px;border:1px solid var(--border);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;background:var(--s2);color:var(--text2);white-space:nowrap}
+.page-tab.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.page-tab.active.t2{background:var(--green);color:#07090d;border-color:var(--green)}
+.page-tab.active.t3{background:var(--yellow);color:#07090d;border-color:var(--yellow)}
+.page-tab:hover:not(.active){color:var(--text);border-color:var(--border2)}
+.page{display:none}.page.active{display:block}
+
+/* HERO */
+.hero{background:linear-gradient(160deg,#0d1a2a 0%,#07090d 60%);border-bottom:1px solid var(--border);padding:52px 24px 44px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 0%,rgba(79,142,247,0.08) 0%,transparent 60%),radial-gradient(ellipse at 70% 100%,rgba(34,211,165,0.06) 0%,transparent 50%)}
+.hero-icon{font-size:52px;line-height:1;margin-bottom:14px;position:relative}
+.hero-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(26px,5vw,44px);font-weight:800;letter-spacing:-1px;position:relative;color:var(--text)}
+.hero-title span{background:linear-gradient(135deg,#4f8ef7,#22d3a5);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-title span.y{background:linear-gradient(135deg,#f59e0b,#f87171);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:14px;color:var(--text2);margin-top:8px;position:relative}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:20px;font-size:13px;font-weight:500;margin-top:12px;position:relative}
+.hero-badge.blue{background:rgba(79,142,247,0.1);border:1px solid rgba(79,142,247,0.2);color:var(--blue)}
+.hero-badge.green{background:rgba(34,211,165,0.1);border:1px solid rgba(34,211,165,0.2);color:var(--green)}
+.hero-badge.yellow{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.2);color:var(--yellow)}
+
+/* STATS */
+.stats-wrap{max-width:960px;margin:-28px auto 0;padding:0 20px;position:relative;z-index:2}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:700px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+.stat-card{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:18px 14px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.3)}
+.stat-icon{font-size:20px;margin-bottom:6px}
+.stat-val{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--text)}
+.stat-val.green{color:var(--green)}.stat-val.blue{color:var(--blue)}.stat-val.yellow{color:var(--yellow)}.stat-val.red{color:var(--red)}
+.stat-label{font-size:10px;color:var(--text2);margin-top:3px;font-weight:500;text-transform:uppercase;letter-spacing:0.5px}
+
+/* CONTENT */
+.content{max-width:960px;margin:36px auto 0;padding:0 20px;display:flex;flex-direction:column;gap:24px}
+.section{background:var(--s1);border:1px solid var(--border);border-radius:20px;overflow:hidden}
+.section-header{padding:18px 22px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.section-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.section-title{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;color:var(--text)}
+.section-body{padding:18px 22px}
+
+/* EXPENSE LOG */
+.day-label{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.8px;padding:12px 0 6px;display:flex;align-items:center;gap:8px}
+.day-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.exp-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--s2);border:1px solid var(--border);border-radius:11px;margin-bottom:5px;transition:border-color 0.15s}
+.exp-row:hover{border-color:var(--border2)}
+.exp-emoji{width:32px;height:32px;border-radius:8px;background:var(--s3);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.exp-main{flex:1;min-width:0}
+.exp-what{font-size:13px;font-weight:600;color:var(--text)}
+.exp-who{font-size:11px;color:var(--text2);margin-top:1px}
+.exp-note{display:inline-flex;align-items:center;font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;background:rgba(247,129,102,0.1);color:#f7896e;border:1px solid rgba(247,129,102,0.2);margin-top:3px}
+.exp-mode{font-size:10px;color:var(--text3)}
+.exp-amt{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:var(--green);flex-shrink:0}
+
+/* WHO PAID BARS */
+.paid-list{display:flex;flex-direction:column;gap:9px}
+.paid-row{display:flex;align-items:center;gap:10px}
+.paid-name{width:70px;font-size:13px;font-weight:600;color:var(--text);flex-shrink:0}
+.paid-bar-wrap{flex:1;background:var(--s3);border-radius:6px;height:7px;overflow:hidden}
+.paid-bar{height:100%;border-radius:6px}
+.paid-val{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;color:var(--text);width:76px;text-align:right;flex-shrink:0}
+.paid-pct{font-size:11px;color:var(--text2);width:34px;text-align:right;flex-shrink:0}
+
+/* SHARES GRID */
+.shares-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:9px}
+.share-card{background:var(--s2);border:1px solid var(--border);border-radius:11px;padding:13px 15px}
+.share-name{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px}
+.avatar{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.share-amt{font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:700;color:var(--text)}
+.share-sub{font-size:11px;color:var(--text2);margin-top:2px}
+
+/* EXCEPTIONS */
+.exception-list{display:flex;flex-direction:column;gap:7px}
+.exc-item{display:flex;gap:10px;background:rgba(247,129,102,0.05);border:1px solid rgba(247,129,102,0.15);border-radius:10px;padding:11px 13px}
+.exc-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:6px}
+.exc-text{font-size:13px;color:var(--text2);line-height:1.5}
+.exc-text strong{color:var(--text)}
+
+/* SETTLEMENT ROWS */
+.settle-cards{display:flex;flex-direction:column;gap:7px}
+.settle-row{display:flex;align-items:center;gap:8px;background:var(--s2);border:1px solid var(--border);border-radius:11px;padding:13px 15px;transition:border-color 0.15s}
+.settle-row:hover{border-color:var(--border2)}
+.settle-num{width:20px;height:20px;border-radius:5px;background:var(--s3);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text2);flex-shrink:0}
+.settle-from{font-size:13px;font-weight:600;color:var(--red);flex:1;min-width:60px}
+.settle-arrow{font-size:14px;color:var(--text3);flex-shrink:0}
+.settle-to{font-size:13px;font-weight:600;color:var(--green);flex:1;text-align:right;min-width:60px}
+.settle-badge{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:var(--yellow);background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.2);border-radius:8px;padding:4px 10px;flex-shrink:0}
+.prepaid-note{display:flex;align-items:center;gap:8px;background:rgba(34,211,165,0.05);border:1px solid rgba(34,211,165,0.15);border-radius:10px;padding:11px 13px;margin-top:8px;font-size:13px;color:var(--text2)}
+
+/* SUMMARY */
+.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+@media(max-width:500px){.summary-grid{grid-template-columns:1fr}}
+.summary-card{border-radius:13px;padding:18px;text-align:center}
+.summary-card.khushi{background:linear-gradient(135deg,rgba(79,142,247,0.1),rgba(79,142,247,0.04));border:1px solid rgba(79,142,247,0.2)}
+.summary-card.priyam{background:linear-gradient(135deg,rgba(34,211,165,0.1),rgba(34,211,165,0.04));border:1px solid rgba(34,211,165,0.2)}
+.summary-name{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:5px}
+.summary-amt{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:800}
+.summary-card.khushi .summary-amt{color:var(--blue)}
+.summary-card.priyam .summary-amt{color:var(--green)}
+.summary-label{font-size:11px;color:var(--text2);margin-top:3px}
+.total-settle{background:var(--s2);border:1px solid var(--border);border-radius:11px;padding:15px 18px;display:flex;justify-content:space-between;align-items:center}
+.total-settle-amt{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:800;color:var(--yellow)}
+
+/* VERIFY */
+.verify-list{display:flex;flex-direction:column;gap:7px}
+.verify-item{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--text2)}
+.check{width:20px;height:20px;border-radius:5px;background:rgba(34,211,165,0.1);border:1px solid rgba(34,211,165,0.25);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
+
+/* ── ONGOING PAGE ── */
+.og-hero{background:linear-gradient(160deg,#0a1a0f 0%,#07090d 60%);border-bottom:1px solid var(--border);padding:44px 24px 38px;text-align:center;position:relative;overflow:hidden}
+.og-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 0%,rgba(34,211,165,0.07) 0%,transparent 60%)}
+
+/* LEDGER TABLE */
+.ledger-wrap{overflow-x:auto}
+table.ledger{width:100%;border-collapse:collapse;min-width:500px}
+table.ledger th{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.6px;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+table.ledger td{padding:10px 12px;font-size:13px;color:var(--text);border-bottom:1px solid rgba(30,42,56,0.5)}
+table.ledger tr:last-child td{border-bottom:none}
+table.ledger tr:hover td{background:rgba(255,255,255,0.015)}
+.lamt{font-family:'Space Grotesk',sans-serif;font-weight:600;text-align:right;white-space:nowrap}
+.lamt.owe{color:var(--green)}.lamt.debt{color:var(--red)}.lamt.settled{color:var(--text3)}
+.person-cell{display:flex;align-items:center;gap:8px}
+.settled-badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;background:rgba(34,211,165,0.1);color:var(--green);border:1px solid rgba(34,211,165,0.2)}
+.owe-badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;background:rgba(248,113,113,0.1);color:var(--red);border:1px solid rgba(248,113,113,0.2)}
+.debt-badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;background:rgba(245,158,11,0.1);color:var(--yellow);border:1px solid rgba(245,158,11,0.2)}
+
+/* TXN LOG */
+.txn-log{display:flex;flex-direction:column;gap:6px}
+.txn-row{display:flex;align-items:center;gap:9px;background:var(--s2);border:1px solid var(--border);border-radius:11px;padding:12px 14px;flex-wrap:wrap;transition:border-color 0.15s}
+.txn-row:hover{border-color:var(--border2)}
+.txn-num{width:20px;height:20px;border-radius:5px;background:var(--s3);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text2);flex-shrink:0}
+.txn-icon{width:30px;height:30px;border-radius:8px;background:var(--s3);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.txn-info{flex:1;min-width:120px}
+.txn-desc{font-size:13px;font-weight:600;color:var(--text)}
+.txn-meta{font-size:11px;color:var(--text2);margin-top:1px}
+.txn-date{font-size:10px;color:var(--text3);background:var(--s3);padding:2px 7px;border-radius:20px;flex-shrink:0}
+.txn-from{font-size:13px;font-weight:600;color:var(--red);flex-shrink:0}
+.txn-to{font-size:13px;font-weight:600;color:var(--green);flex-shrink:0}
+.txn-arrow{color:var(--text3);flex-shrink:0;font-size:13px}
+.txn-amt{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:var(--yellow);background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.2);border-radius:7px;padding:3px 9px;flex-shrink:0}
+
+/* NET GRID */
+.net-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:9px;margin-bottom:16px}
+.net-card{background:var(--s1);border:1.5px solid var(--border);border-radius:13px;padding:14px;text-align:center}
+.net-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;margin:0 auto 7px}
+.net-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:3px}
+.net-amt{font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700}
+.net-lbl{font-size:10px;color:var(--text2);margin-top:2px}
+.net-card.credit{border-color:rgba(34,211,165,0.25);background:rgba(34,211,165,0.04)}
+.net-card.debit{border-color:rgba(248,113,113,0.25);background:rgba(248,113,113,0.04)}
+
+/* 2 COL */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+@media(max-width:600px){.two-col{grid-template-columns:1fr}}
+.sub-card{background:var(--s2);border:1px solid var(--border);border-radius:13px;padding:16px}
+.sub-card-title{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.sub-txn-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)}
+.sub-txn-item:last-child{border-bottom:none}
+.sub-txn-from{font-size:12px;font-weight:600;color:var(--red)}
+.sub-txn-val{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;color:var(--yellow)}
+.sub-total{display:flex;justify-content:space-between;align-items:center;margin-top:9px;padding-top:9px;border-top:1px solid rgba(34,211,165,0.2)}
+.sub-total-val{font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:800;color:var(--green)}
+
+/* ── FINAL MERGED PAGE ── */
+.merged-hero{background:linear-gradient(160deg,#1a1200 0%,#07090d 60%);border-bottom:1px solid var(--border);padding:44px 24px 38px;text-align:center;position:relative;overflow:hidden}
+.merged-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(245,158,11,0.08) 0%,transparent 60%)}
+
+/* MERGED PERSON CARD */
+.merged-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.merged-card{background:var(--s2);border:1.5px solid var(--border);border-radius:13px;padding:15px}
+.merged-card.net-positive{border-color:rgba(34,211,165,0.3)}
+.merged-card.net-negative{border-color:rgba(248,113,113,0.3)}
+.merged-card.net-zero{opacity:0.6}
+.merged-person-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.merged-person-name{font-size:14px;font-weight:700;color:var(--text)}
+.merged-breakdown{display:flex;flex-direction:column;gap:4px}
+.merged-line{display:flex;justify-content:space-between;font-size:12px;color:var(--text2)}
+.merged-line span{font-weight:600}
+.merged-line span.pos{color:var(--green)}
+.merged-line span.neg{color:var(--red)}
+.merged-line span.neu{color:var(--text)}
+.merged-net{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:8px;border-top:1px solid var(--border)}
+.merged-net-label{font-size:11px;color:var(--text2);font-weight:500}
+.merged-net-val{font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:800}
+
+/* BIG SETTLE */
+.big-settle-cards{display:flex;flex-direction:column;gap:7px}
+.big-settle-row{display:flex;align-items:center;gap:8px;border-radius:11px;padding:14px 16px;border:1px solid var(--border);background:var(--s2);transition:border-color 0.15s}
+.big-settle-row:hover{border-color:var(--border2)}
+.big-settle-row.chakrata{border-left:3px solid var(--blue)}
+.big-settle-row.ongoing{border-left:3px solid var(--green)}
+.big-settle-row.merged{border-left:3px solid var(--yellow)}
+.source-tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;flex-shrink:0}
+.source-tag.c{background:rgba(79,142,247,0.15);color:var(--blue)}
+.source-tag.o{background:rgba(34,211,165,0.15);color:var(--green)}
+.source-tag.m{background:rgba(245,158,11,0.15);color:var(--yellow)}
+
+/* AVATARS */
+.a0{background:rgba(79,142,247,0.2);color:#4f8ef7}
+.a1{background:rgba(34,211,165,0.2);color:#22d3a5}
+.a2{background:rgba(248,113,113,0.2);color:#f87171}
+.a3{background:rgba(245,158,11,0.2);color:#f59e0b}
+.a4{background:rgba(167,139,250,0.2);color:#a78bfa}
+.a5{background:rgba(56,189,248,0.2);color:#38bdf8}
+.a6{background:rgba(244,114,182,0.2);color:#f472b6}
+.a7{background:rgba(251,191,36,0.2);color:#fbbf24}
+.a8{background:rgba(52,211,153,0.2);color:#34d399}
+.a9{background:rgba(239,68,68,0.2);color:#ef4444}
+
+.footer{text-align:center;padding:36px 20px 0;color:var(--text3);font-size:12px}
+</style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════
-     LOGIN PAGE
-═══════════════════════════════════ -->
-<div id="loginPage" class="login-page">
-  <div class="login-card">
-    <div class="login-hero">
-      <div class="login-mountain">🏔️</div>
-      <h1 class="login-title">Chakrata 2026</h1>
-      <p class="login-sub">Trip expense tracker</p>
+<!-- PAGE NAV -->
+<div class="page-nav">
+  <button class="page-tab active" onclick="switchPage('chakrata')">🏔️ Chakrata Hisaab</button>
+  <button class="page-tab t2" onclick="switchPage('ongoing')">🔄 Ongoing Hisaab</button>
+  <button class="page-tab t3" onclick="switchPage('merged')">⚡ Final Settlement</button>
+</div>
+
+<!-- ════════════════════════════════════════
+     PAGE 1 — CHAKRATA HISAAB
+════════════════════════════════════════ -->
+<div class="page active" id="page-chakrata">
+<div class="hero">
+  <div class="hero-icon">🏔️</div>
+  <h1 class="hero-title">Chakrata Trip <span>Hisaab</span></h1>
+  <p class="hero-sub">Full expense breakdown &amp; final settlement</p>
+  <div class="hero-badge blue">📅 2 – 4 October 2024</div>
+</div>
+<div class="stats-wrap">
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-icon">💸</div><div class="stat-val">₹62,726</div><div class="stat-label">Total Spent</div></div>
+    <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-val blue">7</div><div class="stat-label">Members</div></div>
+    <div class="stat-card"><div class="stat-icon">🤝</div><div class="stat-val yellow">₹33,260</div><div class="stat-label">Still to Transfer</div></div>
+    <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-val green">6</div><div class="stat-label">Transfers Needed</div></div>
+  </div>
+</div>
+<div class="content">
+
+  <div class="section">
+    <div class="section-header"><div class="section-icon" style="background:rgba(79,142,247,0.1)">🧾</div><div class="section-title">Complete Expense Log</div></div>
+    <div class="section-body">
+      <div class="day-label">Before Trip &nbsp;·&nbsp; ₹32,940</div>
+      <div class="exp-row"><div class="exp-emoji">🏠</div><div class="exp-main"><div class="exp-what">Stay (Advance)</div><div class="exp-who">Paid by <strong>Khushi</strong> · <span class="exp-mode">UPI</span> · Split: All 7</div></div><div class="exp-amt">₹5,000</div></div>
+      <div class="exp-row"><div class="exp-emoji">🚗</div><div class="exp-main"><div class="exp-what">Car (Cab hire)</div><div class="exp-who">Paid by <strong>Khushi</strong> · <span class="exp-mode">Cash</span> · Split: All 7</div></div><div class="exp-amt">₹22,000</div></div>
+      <div class="exp-row"><div class="exp-emoji">🛒</div><div class="exp-main"><div class="exp-what">Blinkit groceries</div><div class="exp-who">Paid by <strong>Khushi</strong> · <span class="exp-mode">UPI</span> · Split: All 7</div></div><div class="exp-amt">₹690</div></div>
+      <div class="exp-row"><div class="exp-emoji">🛍️</div><div class="exp-main"><div class="exp-what">Blinkit groceries</div><div class="exp-who">Paid by <strong>Chehak</strong> · <span class="exp-mode">UPI</span> · Split: All 7</div></div><div class="exp-amt">₹150</div></div>
+      <div class="exp-row"><div class="exp-emoji">🍶</div><div class="exp-main"><div class="exp-what">Liquor</div><div class="exp-who">Paid by <strong>Bharat</strong> · <span class="exp-mode">Cash</span></div><div class="exp-note">⚠️ Split: Saloni, Devansh, Bharat, Dewaang only</div></div><div class="exp-amt">₹2,400</div></div>
+      <div class="exp-row"><div class="exp-emoji">💨</div><div class="exp-main"><div class="exp-what">Vape</div><div class="exp-who">Paid by <strong>Bharat</strong> · <span class="exp-mode">Cash</span></div><div class="exp-note">⚠️ Split: All except Dewaang</div></div><div class="exp-amt">₹2,700</div></div>
+      <div class="day-label">2nd October &nbsp;·&nbsp; ₹490</div>
+      <div class="exp-row"><div class="exp-emoji">🍜</div><div class="exp-main"><div class="exp-what">Breakfast — Maggi + Chai</div><div class="exp-who">Paid by <strong>Priyam</strong> · <span class="exp-mode">UPI</span> · Split: All 7</div></div><div class="exp-amt">₹390</div></div>
+      <div class="exp-row"><div class="exp-emoji">🌊</div><div class="exp-main"><div class="exp-what">Waterfall Trail Room</div><div class="exp-who">Paid by <strong>Dewaang</strong> · <span class="exp-mode">UPI</span> · Split: All 7</div></div><div class="exp-amt">₹100</div></div>
+      <div class="day-label">3rd October &nbsp;·&nbsp; ₹1,630</div>
+      <div class="exp-row"><div class="exp-emoji">🥾</div><div class="exp-main"><div class="exp-what">Trek Entry Fees</div><div class="exp-who">Paid by <strong>Devansh</strong> · <span class="exp-mode">Cash</span> · Split: All 7</div></div><div class="exp-amt">₹400</div></div>
+      <div class="exp-row"><div class="exp-emoji">💧</div><div class="exp-main"><div class="exp-what">Water Bottles</div><div class="exp-who">Paid by <strong>Priyam</strong> · <span class="exp-mode">UPI</span> · Split: All 7</div></div><div class="exp-amt">₹70</div></div>
+      <div class="exp-row"><div class="exp-emoji">💧</div><div class="exp-main"><div class="exp-what">Water Bottles</div><div class="exp-who">Paid by <strong>Devansh</strong> · <span class="exp-mode">Cash</span> · Split: All 7</div></div><div class="exp-amt">₹120</div></div>
+      <div class="exp-row"><div class="exp-emoji">🍜</div><div class="exp-main"><div class="exp-what">After-trek Maggi</div><div class="exp-who">Paid by <strong>Priyam</strong> · <span class="exp-mode">UPI</span> · Split: All 7</div></div><div class="exp-amt">₹1,040</div></div>
+      <div class="day-label">4th October &nbsp;·&nbsp; ₹27,666</div>
+      <div class="exp-row"><div class="exp-emoji">🏨</div><div class="exp-main"><div class="exp-what">Stay + Food</div><div class="exp-who">Paid by <strong>Priyam</strong> · <span class="exp-mode">UPI</span> · Split: All 7</div></div><div class="exp-amt">₹24,545</div></div>
+      <div class="exp-row"><div class="exp-emoji">🌊</div><div class="exp-main"><div class="exp-what">Tiger Falls Entry + Parking</div><div class="exp-who">Paid by <strong>Dewaang</strong> · <span class="exp-mode">UPI</span> · Split: All 7</div></div><div class="exp-amt">₹360</div></div>
+      <div class="exp-row"><div class="exp-emoji">🍜</div><div class="exp-main"><div class="exp-what">Tiger Falls Maggi</div><div class="exp-who">Paid by <strong>Priyam</strong> · <span class="exp-mode">UPI</span> · Split: All 7</div></div><div class="exp-amt">₹775</div></div>
+      <div class="exp-row"><div class="exp-emoji">🐆</div><div class="exp-main"><div class="exp-what">Bagheera Restaurant</div><div class="exp-who">Paid by <strong>Priyam</strong> · <span class="exp-mode">UPI</span> · Split: All 7</div></div><div class="exp-amt">₹1,156</div></div>
+      <div class="exp-row"><div class="exp-emoji">☕</div><div class="exp-main"><div class="exp-what">Chandna's</div><div class="exp-who">Paid by <strong>Priyam</strong> · <span class="exp-mode">UPI</span> · Split: All 7</div></div><div class="exp-amt">₹380</div></div>
+      <div class="exp-row"><div class="exp-emoji">🌙</div><div class="exp-main"><div class="exp-what">Chakrata Market Dinner</div><div class="exp-who">Paid by <strong>Priyam</strong> · <span class="exp-mode">UPI</span></div><div class="exp-note">⚠️ Split: Chehak, Devansh, Bharat, Dewaang only</div></div><div class="exp-amt">₹450</div></div>
     </div>
+  </div>
 
-    <p class="field-label">Who are you?</p>
-    <div class="member-grid" id="memberGrid"></div>
-
-    <div id="pinSection" style="display:none">
-      <p class="field-label" style="margin-top:20px">Enter your PIN</p>
-      <div class="pin-row" id="pinRow">
-        <input class="pin-input" type="password" maxlength="1" inputmode="numeric"/>
-        <input class="pin-input" type="password" maxlength="1" inputmode="numeric"/>
-        <input class="pin-input" type="password" maxlength="1" inputmode="numeric"/>
-        <input class="pin-input" type="password" maxlength="1" inputmode="numeric"/>
+  <div class="section">
+    <div class="section-header"><div class="section-icon" style="background:rgba(34,211,165,0.1)">💳</div><div class="section-title">Who Paid How Much</div></div>
+    <div class="section-body">
+      <div class="paid-list">
+        <div class="paid-row"><div class="paid-name">Priyam</div><div class="paid-bar-wrap"><div class="paid-bar" style="width:45.9%;background:linear-gradient(90deg,#22d3a5,#4f8ef7)"></div></div><div class="paid-val">₹28,806</div><div class="paid-pct">45.9%</div></div>
+        <div class="paid-row"><div class="paid-name">Khushi</div><div class="paid-bar-wrap"><div class="paid-bar" style="width:44.1%;background:linear-gradient(90deg,#4f8ef7,#a78bfa)"></div></div><div class="paid-val">₹27,690</div><div class="paid-pct">44.1%</div></div>
+        <div class="paid-row"><div class="paid-name">Bharat</div><div class="paid-bar-wrap"><div class="paid-bar" style="width:8.1%;background:#f87171"></div></div><div class="paid-val">₹5,100</div><div class="paid-pct">8.1%</div></div>
+        <div class="paid-row"><div class="paid-name">Devansh</div><div class="paid-bar-wrap"><div class="paid-bar" style="width:0.8%;background:#f59e0b"></div></div><div class="paid-val">₹520</div><div class="paid-pct">0.8%</div></div>
+        <div class="paid-row"><div class="paid-name">Dewaang</div><div class="paid-bar-wrap"><div class="paid-bar" style="width:0.7%;background:#a78bfa"></div></div><div class="paid-val">₹460</div><div class="paid-pct">0.7%</div></div>
+        <div class="paid-row"><div class="paid-name">Chehak</div><div class="paid-bar-wrap"><div class="paid-bar" style="width:0.2%;background:#f472b6"></div></div><div class="paid-val">₹150</div><div class="paid-pct">0.2%</div></div>
+        <div class="paid-row"><div class="paid-name">Saloni</div><div class="paid-bar-wrap"><div class="paid-bar" style="width:0%"></div></div><div class="paid-val" style="color:var(--text2)">₹0</div><div class="paid-pct" style="color:var(--text3)">—</div></div>
       </div>
-      <p class="pin-error" id="pinError"></p>
-      <button class="btn-primary full" onclick="doLogin()">Enter →</button>
     </div>
+  </div>
 
-    <div class="viewer-btn-wrap">
-      <button class="btn-viewer" onclick="enterViewer()">👁 View only (no login)</button>
+  <div class="section">
+    <div class="section-header"><div class="section-icon" style="background:rgba(167,139,250,0.1)">⚖️</div><div class="section-title">Individual Expense Shares</div></div>
+    <div class="section-body">
+      <div class="shares-grid">
+        <div class="share-card"><div class="share-name"><span class="avatar a0">S</span>Saloni</div><div class="share-amt">₹9,218</div><div class="share-sub">Incl: all + liquor</div></div>
+        <div class="share-card"><div class="share-name"><span class="avatar a1">K</span>Khushi</div><div class="share-amt">₹8,618</div><div class="share-sub">Excl: liquor, mkt dinner</div></div>
+        <div class="share-card"><div class="share-name"><span class="avatar a4">C</span>Chehak</div><div class="share-amt">₹8,730.50</div><div class="share-sub">Excl: liquor</div></div>
+        <div class="share-card"><div class="share-name"><span class="avatar a3">D</span>Devansh</div><div class="share-amt">₹9,330.50</div><div class="share-sub">All splits</div></div>
+        <div class="share-card"><div class="share-name"><span class="avatar a2">B</span>Bharat</div><div class="share-amt">₹9,330.50</div><div class="share-sub">All splits</div></div>
+        <div class="share-card"><div class="share-name"><span class="avatar a5">Dw</span>Dewaang</div><div class="share-amt">₹8,880.50</div><div class="share-sub">Excl: vape</div></div>
+        <div class="share-card"><div class="share-name"><span class="avatar a6">P</span>Priyam</div><div class="share-amt">₹8,618</div><div class="share-sub">Excl: liquor, mkt dinner</div></div>
+      </div>
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:13px">
+        <span style="color:var(--text2)">Total of all shares</span>
+        <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--green)">₹62,726.00 ✓</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-icon" style="background:rgba(248,113,113,0.1)">⚠️</div><div class="section-title">Split Exceptions</div></div>
+    <div class="section-body">
+      <div class="exception-list">
+        <div class="exc-item"><div class="exc-dot" style="background:#f7896e"></div><div class="exc-text"><strong>Liquor ₹2,400</strong> — Saloni, Devansh, Bharat, Dewaang only. Khushi, Priyam, Chehak excluded.</div></div>
+        <div class="exc-item"><div class="exc-dot" style="background:#f7896e"></div><div class="exc-text"><strong>Vape ₹2,700</strong> — Everyone except Dewaang.</div></div>
+        <div class="exc-item"><div class="exc-dot" style="background:#f7896e"></div><div class="exc-text"><strong>Chakrata Market Dinner ₹450</strong> — Chehak, Devansh, Bharat, Dewaang only. Priyam, Saloni, Khushi excluded.</div></div>
+        <div class="exc-item"><div class="exc-dot" style="background:var(--green)"></div><div class="exc-text"><strong style="color:var(--green)">Saloni prepaid ₹6,000 to Khushi</strong> — Reduces Saloni's balance from ₹9,218 → <strong>₹3,218</strong> remaining.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-icon" style="background:rgba(245,158,11,0.1)">🤝</div><div class="section-title">Final Settlement — Chakrata Only</div></div>
+    <div class="section-body">
+      <div class="settle-cards">
+        <div id="srow_c1" class="settle-row"><div class="settle-num">1</div><div class="settle-from">Saloni</div><div class="settle-arrow">→</div><div class="settle-badge">₹3,218</div><div class="settle-arrow">→</div><div class="settle-to">Khushi</div>
+        <div id="sstatus_c1" style="padding:4px 2px 2px"></div></div>
+        <div id="srow_c2" class="settle-row"><div class="settle-num">2</div><div class="settle-from">Devansh</div><div class="settle-arrow">→</div><div class="settle-badge">₹8,810.50</div><div class="settle-arrow">→</div><div class="settle-to">Khushi</div>
+        <div id="sstatus_c2" style="padding:4px 2px 2px"></div></div>
+        <div id="srow_c3" class="settle-row"><div class="settle-num">3</div><div class="settle-from">Bharat</div><div class="settle-arrow">→</div><div class="settle-badge">₹1,043.50</div><div class="settle-arrow">→</div><div class="settle-to">Khushi</div>
+        <div id="sstatus_c3" style="padding:4px 2px 2px"></div></div>
+        <div id="srow_c4" class="settle-row"><div class="settle-num">4</div><div class="settle-from">Bharat</div><div class="settle-arrow">→</div><div class="settle-badge">₹3,187</div><div class="settle-arrow">→</div><div class="settle-to">Priyam</div>
+        <div id="sstatus_c4" style="padding:4px 2px 2px"></div></div>
+        <div id="srow_c5" class="settle-row"><div class="settle-num">5</div><div class="settle-from">Chehak</div><div class="settle-arrow">→</div><div class="settle-badge">₹8,580.50</div><div class="settle-arrow">→</div><div class="settle-to">Priyam</div>
+        <div id="sstatus_c5" style="padding:4px 2px 2px"></div></div>
+        <div id="srow_c6" class="settle-row"><div class="settle-num">6</div><div class="settle-from">Dewaang</div><div class="settle-arrow">→</div><div class="settle-badge">₹8,420.50</div><div class="settle-arrow">→</div><div class="settle-to">Priyam</div>
+        <div id="sstatus_c6" style="padding:4px 2px 2px"></div></div>
+      </div>
+      <div class="prepaid-note">✅ <strong>₹6,000 already paid</strong> — Saloni → Khushi (before trip).</div>
+      <div style="margin-top:12px">
+        <div class="summary-grid">
+          <div class="summary-card khushi"><div class="summary-name">🏦 Khushi receives</div><div class="summary-amt">₹13,072</div><div class="summary-label">After Saloni's ₹6k prepayment</div></div>
+          <div class="summary-card priyam"><div class="summary-name">🏦 Priyam receives</div><div class="summary-amt">₹20,188</div><div class="summary-label">From Bharat, Chehak, Dewaang</div></div>
+        </div>
+        <div class="total-settle">
+          <div><div style="font-size:13px;color:var(--text2)">Total remaining transfers</div><div style="font-size:11px;color:var(--text3);margin-top:3px">6 transfers settle all balances</div></div>
+          <div class="total-settle-amt">₹33,260</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-icon" style="background:rgba(34,211,165,0.1)">✔️</div><div class="section-title">Verification</div></div>
+    <div class="section-body">
+      <div class="verify-list">
+        <div class="verify-item"><div class="check">✓</div>Total expenses: <strong style="color:var(--text);margin-left:6px">₹62,726</strong></div>
+        <div class="verify-item"><div class="check">✓</div>Total paid by members: <strong style="color:var(--text);margin-left:6px">₹62,726 ✅</strong></div>
+        <div class="verify-item"><div class="check">✓</div>Sum of all shares: <strong style="color:var(--text);margin-left:6px">₹62,726 ✅</strong></div>
+        <div class="verify-item"><div class="check">✓</div>Saloni ₹6k prepayment: <strong style="color:var(--green);margin-left:6px">Accounted for</strong></div>
+        <div class="verify-item"><div class="check">✓</div>Remaining: <strong style="color:var(--yellow);margin-left:6px">₹33,260 via 6 transfers</strong></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<div class="footer">🏔️ Chakrata 2024 · All amounts verified</div>
+</div>
+
+<!-- ════════════════════════════════════════
+     PAGE 2 — ONGOING HISAAB
+════════════════════════════════════════ -->
+<div class="page" id="page-ongoing">
+<div class="og-hero">
+  <div style="font-size:46px;line-height:1;margin-bottom:12px;position:relative">🔄</div>
+  <h1 class="hero-title">Ongoing <span style="background:linear-gradient(135deg,#22d3a5,#4f8ef7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Hisaab</span></h1>
+  <p class="hero-sub">Dewaang's running ledger — all dues across the squad</p>
+  <div class="hero-badge green">Last updated: 11 Oct 2026</div>
+</div>
+<div class="stats-wrap">
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-val green">₹11,320</div><div class="stat-label">Total Owed to You</div></div>
+    <div class="stat-card"><div class="stat-icon">📉</div><div class="stat-val red">₹380</div><div class="stat-label">You Owe</div></div>
+    <div class="stat-card"><div class="stat-icon">🟢</div><div class="stat-val blue">9</div><div class="stat-label">Owing You</div></div>
+    <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-val">10</div><div class="stat-label">Settled</div></div>
+  </div>
+</div>
+<div class="content">
+
+  <!-- FULL LEDGER FROM APP -->
+  <div class="section">
+    <div class="section-header"><div class="section-icon" style="background:rgba(34,211,165,0.1)">📒</div><div class="section-title">Full Ledger — From Hisaab App</div></div>
+    <div class="section-body">
+      <div class="ledger-wrap">
+        <table class="ledger">
+          <thead>
+            <tr>
+              <th>Person</th>
+              <th>Entries</th>
+              <th>Last Activity</th>
+              <th style="text-align:right">Balance</th>
+              <th style="text-align:center">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><div class="person-cell"><span class="avatar a0">S</span>Saloni</div></td><td style="color:var(--text2)">34</td><td style="color:var(--text2)">29 Sept 2026</td><td class="lamt owe">₹4,220</td><td style="text-align:center"><span class="owe-badge">owes you</span></td></tr>
+            <tr><td><div class="person-cell"><span class="avatar a1">K</span>Khushi</div></td><td style="color:var(--text2)">36</td><td style="color:var(--text2)">9 Oct 2026</td><td class="lamt owe">₹3,605</td><td style="text-align:center"><span class="owe-badge">owes you</span></td></tr>
+            <tr><td><div class="person-cell"><span class="avatar a2">B</span>Bharat</div></td><td style="color:var(--text2)">55</td><td style="color:var(--text2)">9 Oct 2026</td><td class="lamt owe">₹2,300</td><td style="text-align:center"><span class="owe-badge">owes you</span></td></tr>
+            <tr><td><div class="person-cell"><span class="avatar a4">C</span>Chehak</div></td><td style="color:var(--text2)">15</td><td style="color:var(--text2)">4 Oct 2026</td><td class="lamt owe">₹475</td><td style="text-align:center"><span class="owe-badge">owes you</span></td></tr>
+            <tr><td><div class="person-cell"><span class="avatar a5">K</span>Kirtan</div></td><td style="color:var(--text2)">8</td><td style="color:var(--text2)">24 Sept 2026</td><td class="lamt owe">₹335</td><td style="text-align:center"><span class="owe-badge">owes you</span></td></tr>
+            <tr><td><div class="person-cell"><span class="avatar a3">D</span>Devansh</div></td><td style="color:var(--text2)">48</td><td style="color:var(--text2)">11 Oct 2026</td><td class="lamt owe">₹155</td><td style="text-align:center"><span class="owe-badge">owes you</span></td></tr>
+            <tr><td><div class="person-cell"><span class="avatar a8">A</span>Ashutosh</div></td><td style="color:var(--text2)">4</td><td style="color:var(--text2)">9 Aug 2026</td><td class="lamt owe">₹100</td><td style="text-align:center"><span class="owe-badge">owes you</span></td></tr>
+            <tr><td><div class="person-cell"><span class="avatar a9">S</span>SHAURYA football</div></td><td style="color:var(--text2)">1</td><td style="color:var(--text2)">10 Oct 2026</td><td class="lamt owe">₹70</td><td style="text-align:center"><span class="owe-badge">owes you</span></td></tr>
+            <tr><td><div class="person-cell"><span class="avatar a7">K</span>Krish (Park)</div></td><td style="color:var(--text2)">1</td><td style="color:var(--text2)">28 Sept 2026</td><td class="lamt owe">₹60</td><td style="text-align:center"><span class="owe-badge">owes you</span></td></tr>
+            <tr style="background:rgba(30,42,56,0.3)"><td><div class="person-cell"><span class="avatar" style="background:rgba(94,94,94,0.2);color:#888">A</span>Aditi</div></td><td style="color:var(--text3)">4</td><td style="color:var(--text3)">2 Jun 2026</td><td class="lamt settled">₹0</td><td style="text-align:center"><span class="settled-badge">settled ✓</span></td></tr>
+            <tr style="background:rgba(30,42,56,0.3)"><td><div class="person-cell"><span class="avatar" style="background:rgba(94,94,94,0.2);color:#888">A</span>Anni</div></td><td style="color:var(--text3)">4</td><td style="color:var(--text3)">11 Sept 2026</td><td class="lamt settled">₹0</td><td style="text-align:center"><span class="settled-badge">settled ✓</span></td></tr>
+            <tr style="background:rgba(30,42,56,0.3)"><td><div class="person-cell"><span class="avatar" style="background:rgba(94,94,94,0.2);color:#888">A</span>Ayush Bhaiya</div></td><td style="color:var(--text3)">5</td><td style="color:var(--text3)">11 Sept 2026</td><td class="lamt settled">₹0</td><td style="text-align:center"><span class="settled-badge">settled ✓</span></td></tr>
+            <tr style="background:rgba(30,42,56,0.3)"><td><div class="person-cell"><span class="avatar" style="background:rgba(94,94,94,0.2);color:#888">K</span>Keshav EMC</div></td><td style="color:var(--text3)">2</td><td style="color:var(--text3)">11 Sept 2026</td><td class="lamt settled">₹0</td><td style="text-align:center"><span class="settled-badge">settled ✓</span></td></tr>
+            <tr style="background:rgba(30,42,56,0.3)"><td><div class="person-cell"><span class="avatar" style="background:rgba(94,94,94,0.2);color:#888">R</span>Rishabh Bhaiya</div></td><td style="color:var(--text3)">6</td><td style="color:var(--text3)">11 Sept 2026</td><td class="lamt settled">₹0</td><td style="text-align:center"><span class="settled-badge">settled ✓</span></td></tr>
+            <tr style="background:rgba(30,42,56,0.3)"><td><div class="person-cell"><span class="avatar" style="background:rgba(94,94,94,0.2);color:#888">S</span>Sparsh</div></td><td style="color:var(--text3)">4</td><td style="color:var(--text3)">1 Aug 2026</td><td class="lamt settled">₹0</td><td style="text-align:center"><span class="settled-badge">settled ✓</span></td></tr>
+            <tr style="background:rgba(30,42,56,0.3)"><td><div class="person-cell"><span class="avatar" style="background:rgba(94,94,94,0.2);color:#888">V</span>Vaibhav Goyal Badminton</div></td><td style="color:var(--text3)">2</td><td style="color:var(--text3)">10 Sept 2026</td><td class="lamt settled">₹0</td><td style="text-align:center"><span class="settled-badge">settled ✓</span></td></tr>
+            <tr style="background:rgba(30,42,56,0.3)"><td><div class="person-cell"><span class="avatar" style="background:rgba(94,94,94,0.2);color:#888">V</span>Vansh</div></td><td style="color:var(--text3)">5</td><td style="color:var(--text3)">12 Apr 2026</td><td class="lamt settled">₹0</td><td style="text-align:center"><span class="settled-badge">settled ✓</span></td></tr>
+            <tr style="background:rgba(245,158,11,0.03)"><td><div class="person-cell"><span class="avatar a7">S</span>Samarth</div></td><td style="color:var(--text2)">27</td><td style="color:var(--text2)">29 Sept 2026</td><td class="lamt debt">-₹135</td><td style="text-align:center"><span class="debt-badge">you owe</span></td></tr>
+            <tr style="background:rgba(245,158,11,0.03)"><td><div class="person-cell"><span class="avatar a6">P</span>Priyam</div></td><td style="color:var(--text2)">35</td><td style="color:var(--text2)">9 Oct 2026</td><td class="lamt debt">-₹245</td><td style="text-align:center"><span class="debt-badge">you owe</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5 NEW TRANSACTIONS -->
+  <div class="section">
+    <div class="section-header"><div class="section-icon" style="background:rgba(79,142,247,0.1)">➕</div><div class="section-title">New Transactions to Add</div></div>
+    <div class="section-body">
+      <div class="txn-log">
+        <div class="txn-row"><div class="txn-num">1</div><div class="txn-icon">☕</div><div class="txn-info"><div class="txn-desc">Sylvie Cafe</div><div class="txn-meta">Devansh paid for Priyam</div></div><div class="txn-from">Devansh</div><div class="txn-arrow">→</div><div class="txn-to">Priyam</div><div class="txn-amt">₹1,160</div><div class="txn-date">9 Oct</div></div>
+        <div class="txn-row"><div class="txn-num">2</div><div class="txn-icon">🍫</div><div class="txn-info"><div class="txn-desc">Chocolava Cake</div><div class="txn-meta">Devansh paid · Saloni owes Devansh</div></div><div class="txn-from">Saloni</div><div class="txn-arrow">→</div><div class="txn-to">Devansh</div><div class="txn-amt">₹100</div><div class="txn-date">4 Oct</div></div>
+        <div class="txn-row"><div class="txn-num">3</div><div class="txn-icon">🍕</div><div class="txn-info"><div class="txn-desc">Domino's</div><div class="txn-meta">Khushi paid for Devansh</div></div><div class="txn-from">Khushi</div><div class="txn-arrow">→</div><div class="txn-to">Devansh</div><div class="txn-amt">₹350</div><div class="txn-date">4 Oct</div></div>
+        <div class="txn-row"><div class="txn-num">4</div><div class="txn-icon">🍕</div><div class="txn-info"><div class="txn-desc">Domino's</div><div class="txn-meta">Bharat paid for Devansh</div></div><div class="txn-from">Bharat</div><div class="txn-arrow">→</div><div class="txn-to">Devansh</div><div class="txn-amt">₹350</div><div class="txn-date">4 Oct</div></div>
+        <div class="txn-row"><div class="txn-num">5</div><div class="txn-icon">⚽</div><div class="txn-info"><div class="txn-desc">Football</div><div class="txn-meta">Bharat paid for Devansh</div></div><div class="txn-from">Bharat</div><div class="txn-arrow">→</div><div class="txn-to">Devansh</div><div class="txn-amt">₹190</div><div class="txn-date">11 Oct</div></div>
+      </div>
+      <div style="margin-top:12px;padding:12px 14px;background:rgba(34,211,165,0.05);border:1px solid rgba(34,211,165,0.15);border-radius:10px;font-size:12px;color:var(--text2)">
+        💡 Devansh receives ₹790 (Saloni ₹100 + Khushi ₹350 + Bharat ₹540) but owes Priyam ₹1,160 → nets to Devansh paying Priyam ₹370
+      </div>
+    </div>
+  </div>
+
+</div>
+<div class="footer">🔄 Ongoing Hisaab · Last updated 11 Oct 2026</div>
+</div>
+
+<!-- ════════════════════════════════════════
+     PAGE 3 — FINAL MERGED SETTLEMENT
+════════════════════════════════════════ -->
+<div class="page" id="page-merged">
+<div class="merged-hero">
+  <div style="font-size:46px;line-height:1;margin-bottom:12px;position:relative">⚡</div>
+  <h1 class="hero-title">Final <span class="y">Settlement</span></h1>
+  <p class="hero-sub">Every person · every rupee · all sources combined</p>
+  <div class="hero-badge yellow">Chakrata + Ongoing + New Txns · 9 people</div>
+</div>
+<div class="stats-wrap">
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-val blue">9</div><div class="stat-label">People Involved</div></div>
+    <div class="stat-card"><div class="stat-icon">🏔️</div><div class="stat-val">₹33,260</div><div class="stat-label">Chakrata Pending</div></div>
+    <div class="stat-card"><div class="stat-icon">🔄</div><div class="stat-val green">₹11,700</div><div class="stat-label">Ongoing Dues</div></div>
+    <div class="stat-card"><div class="stat-icon">🤝</div><div class="stat-val yellow">9</div><div class="stat-label">Final Transfers</div></div>
+  </div>
+</div>
+<div class="content">
+
+<!-- LEGEND -->
+<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:4px 0">
+  <span style="font-size:12px;color:var(--text2);font-weight:600">Sources:</span>
+  <span class="source-tag c">C</span><span style="font-size:12px;color:var(--text2)">Chakrata trip</span>
+  <span class="source-tag o">O</span><span style="font-size:12px;color:var(--text2)">Ongoing app</span>
+  <span class="source-tag m">M</span><span style="font-size:12px;color:var(--text2)">New txns</span>
+</div>
+
+<!-- ── SALONI ── -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon a0" style="font-size:14px;font-weight:700">S</div>
+    <div class="section-title">Saloni</div>
+    <div style="margin-left:auto;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:800;color:var(--red)">owes ₹7,638</div>
+  </div>
+  <div class="section-body">
+    <div class="txn-log">
+      <div class="txn-row"><div class="txn-icon">🏔️</div><div class="txn-info"><div class="txn-desc">Chakrata trip share</div><div class="txn-meta">Net after ₹6,000 prepayment to Khushi</div></div><span class="source-tag c">C</span><div class="txn-from">Saloni</div><div class="txn-arrow">→</div><div class="txn-to">Khushi</div><div class="txn-amt">₹3,218</div></div>
+      <div class="txn-row"><div class="txn-icon">📱</div><div class="txn-info"><div class="txn-desc">Ongoing dues (app)</div><div class="txn-meta">34 entries · last 29 Sept 2026</div></div><span class="source-tag o">O</span><div class="txn-from">Saloni</div><div class="txn-arrow">→</div><div class="txn-to">Dewaang</div><div class="txn-amt">₹4,220</div></div>
+      <div class="txn-row"><div class="txn-icon">🍫</div><div class="txn-info"><div class="txn-desc">Chocolava Cake</div><div class="txn-meta">4 Oct · Devansh paid</div></div><span class="source-tag m">M</span><div class="txn-from">Saloni</div><div class="txn-arrow">→</div><div class="txn-to">Devansh</div><div class="txn-amt">₹100</div></div>
+      <div class="txn-row"><div class="txn-icon">➕</div><div class="txn-info"><div class="txn-desc">Prepayment (already done)</div><div class="txn-meta">Saloni already paid Khushi ₹6,000 before trip</div></div><span class="source-tag c">C</span><div class="txn-from" style="color:var(--green)">DONE</div><div class="txn-arrow">→</div><div class="txn-to">Khushi</div><div class="txn-amt" style="background:rgba(34,211,165,0.1);border-color:rgba(34,211,165,0.2);color:var(--green)">₹6,000 ✓</div></div>
+    </div>
+    <div style="margin-top:10px;padding:10px 14px;background:var(--s2);border:1px solid var(--border);border-radius:10px;display:flex;justify-content:space-between;font-size:13px">
+      <span style="color:var(--text2)">Saloni pays: ₹3,218 → Khushi + ₹4,220 → Dewaang + ₹100 → Devansh</span>
+      <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--red)">₹7,538 (+ ₹6k done)</span>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════
-     APP SHELL
-═══════════════════════════════════ -->
-<div id="appShell" style="display:none">
-
-  <!-- NAV -->
-  <nav class="nav">
-    <div class="nav-inner">
-      <div class="logo">🏔️ <span class="logo-text">Chakrata</span></div>
-      <div class="nav-tabs" id="navTabs">
-        <button class="tab-btn active" data-tab="home">🏠 Home</button>
-        <button class="tab-btn" data-tab="expenses">💸 Expenses</button>
-        <button class="tab-btn" data-tab="settle">🤝 Settle</button>
-      </div>
-      <div class="nav-right">
-        <div class="user-chip" id="userChip"></div>
-        <span class="mode-badge" id="modeBadge"></span>
-        <button class="logout-btn" onclick="logout()" title="Logout">⏏</button>
-      </div>
-    </div>
-  </nav>
-
-  <!-- ADMIN LOCKED BANNER (viewer sees this) -->
-  <div class="viewer-banner" id="viewerBanner" style="display:none">
-    👁 You are in <strong>View Mode</strong> — <a href="#" onclick="showAdminLogin()">Admin Login</a> to add/edit expenses or mark settlements
+<!-- ── KHUSHI ── -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon a1" style="font-size:14px;font-weight:700">K</div>
+    <div class="section-title">Khushi</div>
+    <div style="margin-left:auto;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:800;color:var(--red)">owes ₹7,605 net</div>
   </div>
-
-  <main class="main">
-
-    <!-- ── HOME ── -->
-    <section class="tab-panel active" id="tab-home">
-      <div class="home-hero">
-        <div class="stats-row" id="homeStats"></div>
-      </div>
-      <div class="section-label">💰 Who Paid</div>
-      <div class="paid-grid" id="homePaidGrid"></div>
-      <div class="section-label" style="margin-top:24px">🕐 Recent</div>
-      <div id="homeActivity"></div>
-    </section>
-
-    <!-- ── EXPENSES ── -->
-    <section class="tab-panel" id="tab-expenses">
-      <div class="day-strip" id="dayStrip">
-        <button class="day-pill active" data-day="all">All</button>
-        <button class="day-pill" data-day="Pre-Trip">Pre-Trip</button>
-        <button class="day-pill" data-day="Day 1">Day 1</button>
-        <button class="day-pill" data-day="Day 2">Day 2</button>
-        <button class="day-pill" data-day="Day 3">Day 3</button>
-        <button class="day-pill" data-day="Day 4">Day 4</button>
-        <button class="day-pill" data-day="Day 5">Day 5</button>
-        <button class="day-pill hotel-pill" data-day="Hotel">🏨 Hotel</button>
-        <button class="day-pill add-day-pill" data-day="__add__">＋</button>
-      </div>
-
-      <div class="two-col">
-        <!-- ADD FORM (admin only) -->
-        <div class="panel" id="addExpensePanel">
-          <h2 class="panel-title" id="addFormTitle">Add Expense</h2>
-
-          <div id="addFormBody">
-            <label class="field-label">What's this for? <span class="req">*</span></label>
-            <input type="text" id="expDesc" class="field-input" placeholder="e.g. Dinner at dhaba"/>
-
-            <label class="field-label">Amount (₹) <span class="req">*</span></label>
-            <input type="number" id="expAmt" class="field-input" placeholder="0" min="0"/>
-
-            <label class="field-label">Paid by</label>
-            <select id="expPaidBy" class="field-input field-select"></select>
-
-            <label class="field-label">Split between</label>
-            <div class="split-actions">
-              <button class="chip-action" onclick="selectAll()">All</button>
-              <button class="chip-action" onclick="selectNone()">None</button>
-              <button class="chip-action" onclick="selectOthers()">Others</button>
-            </div>
-            <div class="member-chips" id="participantChips"></div>
-
-            <label class="field-label">Day</label>
-            <select id="expDay" class="field-input field-select">
-              <option value="Pre-Trip">Pre-Trip</option>
-              <option value="Day 1" selected>Day 1</option>
-              <option value="Day 2">Day 2</option>
-              <option value="Day 3">Day 3</option>
-              <option value="Day 4">Day 4</option>
-              <option value="Day 5">Day 5</option>
-              <option value="Hotel">🏨 Hotel</option>
-            </select>
-
-            <label class="field-label">Category</label>
-            <div class="cat-grid" id="catGrid">
-              <button class="cat-btn active" data-cat="🍔 Food">🍔<br/>Food</button>
-              <button class="cat-btn" data-cat="🚗 Transport">🚗<br/>Transport</button>
-              <button class="cat-btn" data-cat="🏨 Hotel">🏨<br/>Hotel</button>
-              <button class="cat-btn" data-cat="🎯 Activity">🎯<br/>Activity</button>
-              <button class="cat-btn" data-cat="🛒 Shopping">🛒<br/>Shopping</button>
-              <button class="cat-btn" data-cat="💊 Medical">💊<br/>Medical</button>
-              <button class="cat-btn" data-cat="📦 Other">📦<br/>Other</button>
-            </div>
-
-            <label class="field-label">Custom Tags</label>
-            <div class="tag-input-row">
-              <input type="text" id="customTagInput" class="field-input" placeholder="tag, enter to add"/>
-              <button class="btn-icon" onclick="addCustomTag()">＋</button>
-            </div>
-            <div id="customTagsRow" class="custom-tags-row"></div>
-
-            <label class="field-label">Date</label>
-            <input type="date" id="expDate" class="field-input"/>
-
-            <button class="btn-primary full" onclick="addExpense()">Add Expense ➕</button>
-          </div>
-
-          <!-- Viewer sees locked panel -->
-          <div id="addFormLocked" style="display:none" class="locked-panel">
-            <div class="lock-icon">🔒</div>
-            <p>Admin login required to add expenses</p>
-            <button class="btn-primary" onclick="showAdminLogin()">Admin Login</button>
-          </div>
-        </div>
-
-        <!-- FEED -->
-        <div class="panel">
-          <div class="panel-title-row">
-            <h2 class="panel-title">Expenses</h2>
-            <div class="total-chip" id="totalChip">Total: ₹0</div>
-          </div>
-          <div id="expenseFeed" class="expense-feed">
-            <div class="empty-state">Loading… ⏳</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- DIRECT PAYMENT (admin only) -->
-      <div class="panel" style="margin-top:18px" id="directPayPanel">
-        <h2 class="panel-title">💳 Direct Payment</h2>
-        <div id="directPayBody">
-          <div class="three-col">
-            <div>
-              <label class="field-label">From</label>
-              <select id="ptFrom" class="field-input field-select"></select>
-            </div>
-            <div>
-              <label class="field-label">Paid to</label>
-              <select id="ptTo" class="field-input field-select"></select>
-            </div>
-            <div>
-              <label class="field-label">Amount (₹)</label>
-              <input type="number" id="ptAmt" class="field-input" placeholder="0"/>
-            </div>
-          </div>
-          <label class="field-label" style="margin-top:10px">Reason <span class="req">*</span></label>
-          <input type="text" id="ptDesc" class="field-input" placeholder="e.g. Returning Saloni's share"/>
-          <button class="btn-primary" style="margin-top:12px" onclick="addDirectPayment()">Record 💳</button>
-        </div>
-        <div id="directPayLocked" style="display:none" class="locked-panel">
-          <div class="lock-icon">🔒</div>
-          <p>Admin login required</p>
-          <button class="btn-primary" onclick="showAdminLogin()">Admin Login</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- ── SETTLE ── -->
-    <section class="tab-panel" id="tab-settle">
-      <div class="two-col">
-        <div class="panel">
-          <h2 class="panel-title">💰 Net Balances</h2>
-          <div id="balanceSummary"><div class="empty-state">Hit Calculate</div></div>
-          <button class="btn-primary full" style="margin-top:14px" onclick="calculateSettlement()">Calculate 🧮</button>
-        </div>
-        <div class="panel">
-          <h2 class="panel-title">🤝 Who Pays Whom</h2>
-          <div id="settlementResult"><div class="empty-state">Calculate first</div></div>
-          <div id="settleActions" style="display:none;gap:10px;margin-top:14px" class="btn-row">
-            <button class="btn-secondary" onclick="copySettlement()">📋 Copy</button>
-            <button class="btn-secondary" onclick="shareSettlement()">📤 Share</button>
-          </div>
-        </div>
-      </div>
-      <div class="panel" style="margin-top:18px">
-        <h2 class="panel-title">📊 Per-Person Breakdown</h2>
-        <div id="personBreakdown" class="person-grid"></div>
-      </div>
-    </section>
-
-  </main>
-</div>
-
-<!-- ADMIN LOGIN MODAL -->
-<div class="modal-bg" id="adminModal" style="display:none">
-  <div class="modal bottom-sheet">
-    <div class="sheet-handle"></div>
-    <h3 class="modal-title">Admin Login 🔐</h3>
-    <p style="font-size:13px;color:var(--text2);margin-bottom:16px">Enter the admin password to add/edit expenses and mark settlements</p>
-    <label class="field-label">Password</label>
-    <input type="password" id="adminPwInput" class="field-input" placeholder="Admin password"/>
-    <p class="pin-error" id="adminPwError"></p>
-    <div class="btn-row" style="margin-top:14px">
-      <button class="btn-secondary" onclick="closeAdminLogin()">Cancel</button>
-      <button class="btn-primary" onclick="doAdminLogin()">Login →</button>
+  <div class="section-body">
+    <div class="txn-log">
+      <div class="txn-row"><div class="txn-icon">🏔️</div><div class="txn-info"><div class="txn-desc">Chakrata trip share (after Saloni's ₹3,218)</div><div class="txn-meta">Gets back ₹13,072 from others' Chakrata payments</div></div><span class="source-tag c">C</span><div class="txn-from" style="color:var(--green)">RECEIVES</div><div class="txn-arrow">→</div><div class="txn-to" style="color:var(--green)">₹13,072</div></div>
+      <div class="txn-row"><div class="txn-icon">📱</div><div class="txn-info"><div class="txn-desc">Ongoing dues (app)</div><div class="txn-meta">36 entries · last 9 Oct 2026</div></div><span class="source-tag o">O</span><div class="txn-from">Khushi</div><div class="txn-arrow">→</div><div class="txn-to">Dewaang</div><div class="txn-amt">₹3,605</div></div>
+      <div class="txn-row"><div class="txn-icon">🍕</div><div class="txn-info"><div class="txn-desc">Domino's</div><div class="txn-meta">4 Oct</div></div><span class="source-tag m">M</span><div class="txn-from">Khushi</div><div class="txn-arrow">→</div><div class="txn-to">Devansh</div><div class="txn-amt">₹350</div></div>
+    </div>
+    <div style="margin-top:10px;padding:10px 14px;background:var(--s2);border:1px solid var(--border);border-radius:10px;display:flex;justify-content:space-between;font-size:13px">
+      <span style="color:var(--text2)">Khushi pays out (ongoing + new) · separately receives Chakrata money</span>
+      <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--red)">₹3,955</span>
     </div>
   </div>
 </div>
 
-<!-- EDIT EXPENSE MODAL -->
-<div class="modal-bg" id="editModal" style="display:none">
-  <div class="modal bottom-sheet">
-    <div class="sheet-handle"></div>
-    <h3 class="modal-title">Edit Expense ✏️</h3>
-    <label class="field-label">Description</label>
-    <input type="text" id="editDesc" class="field-input"/>
-    <label class="field-label">Amount (₹)</label>
-    <input type="number" id="editAmt" class="field-input"/>
-    <label class="field-label">Day</label>
-    <select id="editDay" class="field-input field-select">
-      <option>Pre-Trip</option><option>Day 1</option><option>Day 2</option>
-      <option>Day 3</option><option>Day 4</option><option>Day 5</option><option>Hotel</option>
-    </select>
-    <label class="field-label">Category</label>
-    <select id="editCat" class="field-input field-select">
-      <option>🍔 Food</option><option>🚗 Transport</option><option>🏨 Hotel</option>
-      <option>🎯 Activity</option><option>🛒 Shopping</option><option>💊 Medical</option><option>📦 Other</option>
-    </select>
-    <div class="btn-row" style="margin-top:16px">
-      <button class="btn-secondary" onclick="closeEdit()">Cancel</button>
-      <button class="btn-primary" onclick="saveEdit()">Save ✓</button>
+<!-- ── CHEHAK ── -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon a4" style="font-size:14px;font-weight:700">C</div>
+    <div class="section-title">Chehak</div>
+    <div style="margin-left:auto;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:800;color:var(--red)">owes ₹9,055.50</div>
+  </div>
+  <div class="section-body">
+    <div class="txn-log">
+      <div class="txn-row"><div class="txn-icon">🏔️</div><div class="txn-info"><div class="txn-desc">Chakrata trip share</div><div class="txn-meta">Excluded from liquor split</div></div><span class="source-tag c">C</span><div class="txn-from">Chehak</div><div class="txn-arrow">→</div><div class="txn-to">Priyam</div><div class="txn-amt">₹8,580.50</div></div>
+      <div class="txn-row"><div class="txn-icon">📱</div><div class="txn-info"><div class="txn-desc">Ongoing dues (app)</div><div class="txn-meta">15 entries · last 4 Oct 2026</div></div><span class="source-tag o">O</span><div class="txn-from">Chehak</div><div class="txn-arrow">→</div><div class="txn-to">Dewaang</div><div class="txn-amt">₹475</div></div>
+    </div>
+    <div style="margin-top:10px;padding:10px 14px;background:var(--s2);border:1px solid var(--border);border-radius:10px;display:flex;justify-content:space-between;font-size:13px">
+      <span style="color:var(--text2)">Total Chehak pays out</span>
+      <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--red)">₹9,055.50</span>
     </div>
   </div>
 </div>
 
-<!-- CUSTOM DAY MODAL -->
-<div class="modal-bg" id="customDayModal" style="display:none">
-  <div class="modal bottom-sheet">
-    <div class="sheet-handle"></div>
-    <h3 class="modal-title">Add Custom Day</h3>
-    <input type="text" id="customDayInput" class="field-input" placeholder="e.g. Day 6, Return Day…"/>
-    <div class="btn-row" style="margin-top:14px">
-      <button class="btn-secondary" onclick="closeCustomDay()">Cancel</button>
-      <button class="btn-primary" onclick="saveCustomDay()">Add</button>
+<!-- ── DEVANSH ── -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon a3" style="font-size:14px;font-weight:700">D</div>
+    <div class="section-title">Devansh</div>
+    <div style="margin-left:auto;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:800;color:var(--red)">owes ₹8,695.50 net</div>
+  </div>
+  <div class="section-body">
+    <div class="txn-log">
+      <div class="txn-row"><div class="txn-icon">🏔️</div><div class="txn-info"><div class="txn-desc">Chakrata trip share</div><div class="txn-meta">Full split — all items</div></div><span class="source-tag c">C</span><div class="txn-from">Devansh</div><div class="txn-arrow">→</div><div class="txn-to">Khushi</div><div class="txn-amt">₹8,810.50</div></div>
+      <div class="txn-row"><div class="txn-icon">📱</div><div class="txn-info"><div class="txn-desc">Ongoing dues (app)</div><div class="txn-meta">48 entries · last 11 Oct 2026</div></div><span class="source-tag o">O</span><div class="txn-from">Devansh</div><div class="txn-arrow">→</div><div class="txn-to">Dewaang</div><div class="txn-amt">₹155</div></div>
+      <div class="txn-row"><div class="txn-icon">☕</div><div class="txn-info"><div class="txn-desc">Sylvie Cafe — Devansh paid for Priyam</div><div class="txn-meta">9 Oct · Devansh owes Priyam ₹1,160</div></div><span class="source-tag m">M</span><div class="txn-from">Devansh</div><div class="txn-arrow">→</div><div class="txn-to">Priyam</div><div class="txn-amt">₹1,160</div></div>
+      <div class="txn-row"><div class="txn-icon">🍕🍫⚽</div><div class="txn-info"><div class="txn-desc">Domino's + Chocolava + Football — others paid for Devansh</div><div class="txn-meta">Saloni ₹100 + Khushi ₹350 + Bharat ₹540 = ₹790 → Devansh receives</div></div><span class="source-tag m">M</span><div class="txn-from" style="color:var(--green)">RECEIVES</div><div class="txn-arrow">→</div><div class="txn-to" style="color:var(--green)">₹790</div></div>
+    </div>
+    <div style="margin-top:10px;padding:10px 14px;background:var(--s2);border:1px solid var(--border);border-radius:10px;display:flex;justify-content:space-between;font-size:13px">
+      <span style="color:var(--text2)">Net: Chakrata ₹8,810.50 + App ₹155 + owes Priyam ₹1,160 − receives ₹790</span>
+      <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--red)">₹9,335.50</span>
     </div>
   </div>
 </div>
 
-<!-- MARK PAID MODAL -->
-<div class="modal-bg" id="markPaidModal" style="display:none">
-  <div class="modal bottom-sheet">
-    <div class="sheet-handle"></div>
-    <h3 class="modal-title" id="markPaidTitle">Mark as Paid ✅</h3>
-    <p style="font-size:13px;color:var(--text2);margin-bottom:16px" id="markPaidDesc"></p>
-    <label class="field-label">Date paid</label>
-    <input type="date" id="markPaidDate" class="field-input"/>
-    <label class="field-label">Note (optional)</label>
-    <input type="text" id="markPaidNote" class="field-input" placeholder="e.g. Paid via GPay"/>
-    <div class="btn-row" style="margin-top:14px">
-      <button class="btn-secondary" onclick="closeMarkPaid()">Cancel</button>
-      <button class="btn-primary" onclick="confirmMarkPaid()">✅ Confirm Paid</button>
+<!-- ── BHARAT ── -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon a2" style="font-size:14px;font-weight:700">B</div>
+    <div class="section-title">Bharat</div>
+    <div style="margin-left:auto;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:800;color:var(--red)">owes ₹2,390.50 net</div>
+  </div>
+  <div class="section-body">
+    <div class="txn-log">
+      <div class="txn-row"><div class="txn-icon">🏔️</div><div class="txn-info"><div class="txn-desc">Chakrata trip share</div><div class="txn-meta">Paid ₹5,100 (liquor+vape) · net owes Khushi+Priyam</div></div><span class="source-tag c">C</span><div class="txn-from">Bharat</div><div class="txn-arrow">→</div><div class="txn-to">Khushi+Priyam</div><div class="txn-amt">₹4,231</div></div>
+      <div class="txn-row"><div class="txn-icon">📱</div><div class="txn-info"><div class="txn-desc">Ongoing dues (app)</div><div class="txn-meta">55 entries · last 9 Oct 2026</div></div><span class="source-tag o">O</span><div class="txn-from">Bharat</div><div class="txn-arrow">→</div><div class="txn-to">Dewaang</div><div class="txn-amt">₹2,300</div></div>
+      <div class="txn-row"><div class="txn-icon">🍕⚽</div><div class="txn-info"><div class="txn-desc">Domino's + Football</div><div class="txn-meta">Bharat paid ₹540 for Devansh · 4 &amp; 11 Oct</div></div><span class="source-tag m">M</span><div class="txn-from">Bharat</div><div class="txn-arrow">→</div><div class="txn-to">Devansh</div><div class="txn-amt">₹540</div></div>
+      <div class="txn-row"><div class="txn-icon">➕</div><div class="txn-info"><div class="txn-desc">Paid liquor &amp; vape for group</div><div class="txn-meta">₹5,100 paid upfront — offset against above dues</div></div><span class="source-tag c">C</span><div class="txn-from" style="color:var(--green)">PAID</div><div class="txn-arrow">→</div><div class="txn-to" style="color:var(--green)">₹5,100 ✓</div></div>
+    </div>
+    <div style="margin-top:10px;padding:10px 14px;background:var(--s2);border:1px solid var(--border);border-radius:10px;display:flex;justify-content:space-between;font-size:13px">
+      <span style="color:var(--text2)">Net after ₹5,100 upfront: owes Chakrata ₹4,231 + App ₹2,300 + new ₹540 − ₹5,100 paid</span>
+      <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--red)">₹1,971</span>
     </div>
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<!-- ── PRIYAM ── -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon a6" style="font-size:14px;font-weight:700">P</div>
+    <div class="section-title">Priyam</div>
+    <div style="margin-left:auto;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:800;color:var(--green)">receives ₹20,518 net</div>
+  </div>
+  <div class="section-body">
+    <div class="txn-log">
+      <div class="txn-row"><div class="txn-icon">🏔️</div><div class="txn-info"><div class="txn-desc">Chakrata — paid ₹28,806 for group</div><div class="txn-meta">Receives ₹20,188 back from Bharat, Chehak, Dewaang</div></div><span class="source-tag c">C</span><div class="txn-from" style="color:var(--green)">RECEIVES</div><div class="txn-arrow">→</div><div class="txn-to" style="color:var(--green)">₹20,188</div></div>
+      <div class="txn-row"><div class="txn-icon">📱</div><div class="txn-info"><div class="txn-desc">Ongoing app balance</div><div class="txn-meta">35 entries · owes Dewaang ₹245</div></div><span class="source-tag o">O</span><div class="txn-from">Priyam</div><div class="txn-arrow">→</div><div class="txn-to">Dewaang</div><div class="txn-amt">₹245</div></div>
+      <div class="txn-row"><div class="txn-icon">☕🍫</div><div class="txn-info"><div class="txn-desc">Sylvie Cafe + Chocolava + net new dues</div><div class="txn-meta">Receives ₹1,160+₹100 = ₹1,260, pays ₹245 to Dewaang</div></div><span class="source-tag m">M</span><div class="txn-from" style="color:var(--green)">RECEIVES</div><div class="txn-arrow">→</div><div class="txn-to" style="color:var(--green)">₹1,260</div></div>
+    </div>
+    <div style="margin-top:10px;padding:10px 14px;background:rgba(34,211,165,0.05);border:1px solid rgba(34,211,165,0.2);border-radius:10px;display:flex;justify-content:space-between;font-size:13px">
+      <span style="color:var(--text2)">Priyam's net: receives ₹20,188 + ₹1,260 − owes ₹245 app</span>
+      <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--green)">+₹21,203</span>
+    </div>
+  </div>
+</div>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
-<script src="js/app.js"></script>
+<!-- ── DEWAANG (you) ── -->
+<div class="section" style="border-color:rgba(79,142,247,0.3)">
+  <div class="section-header" style="background:rgba(79,142,247,0.03)">
+    <div class="section-icon a0" style="font-size:14px;font-weight:700">Dw</div>
+    <div class="section-title">Dewaang <span style="font-size:12px;font-weight:400;color:var(--blue)">(you)</span></div>
+    <div style="margin-left:auto;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:800;color:var(--red)">owes ₹8,800.50</div>
+  </div>
+  <div class="section-body">
+    <div class="txn-log">
+      <div class="txn-row"><div class="txn-icon">🏔️</div><div class="txn-info"><div class="txn-desc">Chakrata trip share</div><div class="txn-meta">Paid ₹460 upfront · net owes Priyam ₹8,420.50</div></div><span class="source-tag c">C</span><div class="txn-from">Dewaang</div><div class="txn-arrow">→</div><div class="txn-to">Priyam</div><div class="txn-amt">₹8,420.50</div></div>
+      <div class="txn-row"><div class="txn-icon">📱</div><div class="txn-info"><div class="txn-desc">You owe Priyam (app)</div><div class="txn-meta">35 entries · last 9 Oct 2026</div></div><span class="source-tag o">O</span><div class="txn-from">Dewaang</div><div class="txn-arrow">→</div><div class="txn-to">Priyam</div><div class="txn-amt">₹245</div></div>
+      <div class="txn-row"><div class="txn-icon">📱</div><div class="txn-info"><div class="txn-desc">You owe Samarth (app)</div><div class="txn-meta">27 entries · last 29 Sept 2026</div></div><span class="source-tag o">O</span><div class="txn-from">Dewaang</div><div class="txn-arrow">→</div><div class="txn-to">Samarth</div><div class="txn-amt">₹135</div></div>
+      <div class="txn-row"><div class="txn-icon">💰</div><div class="txn-info"><div class="txn-desc">People who owe YOU (app)</div><div class="txn-meta">Saloni ₹4,220 + Khushi ₹3,605 + Bharat ₹2,300 + Chehak ₹475 + Devansh ₹155 + others</div></div><span class="source-tag o">O</span><div class="txn-from" style="color:var(--green)">RECEIVES</div><div class="txn-arrow">→</div><div class="txn-to" style="color:var(--green)">₹11,320</div></div>
+    </div>
+    <div style="margin-top:10px;padding:10px 14px;background:rgba(79,142,247,0.05);border:1px solid rgba(79,142,247,0.15);border-radius:10px;display:flex;justify-content:space-between;font-size:13px">
+      <span style="color:var(--text2)">You net: receive ₹11,320 from others · owe ₹8,420.50+₹245+₹135 = ₹8,800.50</span>
+      <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--green)">Net +₹2,519.50</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── ASHUTOSH ── -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon a8" style="font-size:14px;font-weight:700">A</div>
+    <div class="section-title">Ashutosh <span style="font-size:12px;font-weight:400;color:var(--text2)">— not on trip</span></div>
+    <div style="margin-left:auto;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:800;color:var(--red)">owes ₹100</div>
+  </div>
+  <div class="section-body">
+    <div class="txn-log">
+      <div class="txn-row"><div class="txn-icon">📱</div><div class="txn-info"><div class="txn-desc">Ongoing dues (app)</div><div class="txn-meta">4 entries · last 9 Aug 2026</div></div><span class="source-tag o">O</span><div class="txn-from">Ashutosh</div><div class="txn-arrow">→</div><div class="txn-to">Dewaang</div><div class="txn-amt">₹100</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── KIRTAN ── -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon a5" style="font-size:14px;font-weight:700">K</div>
+    <div class="section-title">Kirtan <span style="font-size:12px;font-weight:400;color:var(--text2)">— not on trip</span></div>
+    <div style="margin-left:auto;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:800;color:var(--red)">owes ₹335</div>
+  </div>
+  <div class="section-body">
+    <div class="txn-log">
+      <div class="txn-row"><div class="txn-icon">📱</div><div class="txn-info"><div class="txn-desc">Ongoing dues (app)</div><div class="txn-meta">8 entries · last 24 Sept 2026</div></div><span class="source-tag o">O</span><div class="txn-from">Kirtan</div><div class="txn-arrow">→</div><div class="txn-to">Dewaang</div><div class="txn-amt">₹335</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- FINAL NET TRANSFERS -->
+<div class="section" style="border-color:rgba(245,158,11,0.3)">
+  <div class="section-header" style="background:rgba(245,158,11,0.03)">
+    <div class="section-icon" style="background:rgba(245,158,11,0.12);font-size:16px">⚡</div>
+    <div class="section-title">Final Net Transfers — Close Everything</div>
+  </div>
+  <div class="section-body">
+    <div class="settle-cards">
+      <div style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.6px;padding:2px 0 6px">Chakrata settlements</div>
+      <div class="settle-row"><div class="settle-num">1</div><span class="source-tag c">C</span><div class="settle-from">Saloni</div><div class="settle-arrow">→</div><div class="settle-badge">₹3,218</div><div class="settle-arrow">→</div><div class="settle-to">Khushi</div></div>
+      <div class="settle-row"><div class="settle-num">2</div><span class="source-tag c">C</span><div class="settle-from">Devansh</div><div class="settle-arrow">→</div><div class="settle-badge">₹8,810.50</div><div class="settle-arrow">→</div><div class="settle-to">Khushi</div></div>
+      <div class="settle-row"><div class="settle-num">3</div><span class="source-tag c">C</span><div class="settle-from">Bharat</div><div class="settle-arrow">→</div><div class="settle-badge">₹1,043.50</div><div class="settle-arrow">→</div><div class="settle-to">Khushi</div></div>
+      <div class="settle-row"><div class="settle-num">4</div><span class="source-tag c">C</span><div class="settle-from">Bharat</div><div class="settle-arrow">→</div><div class="settle-badge">₹3,187</div><div class="settle-arrow">→</div><div class="settle-to">Priyam</div></div>
+      <div class="settle-row"><div class="settle-num">5</div><span class="source-tag c">C</span><div class="settle-from">Chehak</div><div class="settle-arrow">→</div><div class="settle-badge">₹8,580.50</div><div class="settle-arrow">→</div><div class="settle-to">Priyam</div></div>
+      <div class="settle-row"><div class="settle-num">6</div><span class="source-tag c">C</span><div class="settle-from">Dewaang</div><div class="settle-arrow">→</div><div class="settle-badge">₹8,420.50</div><div class="settle-arrow">→</div><div class="settle-to">Priyam</div></div>
+
+      <div style="font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.6px;padding:10px 0 6px">Ongoing app dues → Dewaang</div>
+      <div id="srow_o7" class="settle-row"><div class="settle-num">7</div><span class="source-tag o">O</span><div class="settle-from">Saloni</div><div class="settle-arrow">→</div><div class="settle-badge">₹4,220</div><div class="settle-arrow">→</div><div class="settle-to">Dewaang</div>
+        <div id="sstatus_o7" style="padding:4px 2px 2px"></div></div>
+      <div id="srow_o8" class="settle-row"><div class="settle-num">8</div><span class="source-tag o">O</span><div class="settle-from">Khushi</div><div class="settle-arrow">→</div><div class="settle-badge">₹3,605</div><div class="settle-arrow">→</div><div class="settle-to">Dewaang</div>
+        <div id="sstatus_o8" style="padding:4px 2px 2px"></div></div>
+      <div id="srow_o9" class="settle-row"><div class="settle-num">9</div><span class="source-tag o">O</span><div class="settle-from">Bharat</div><div class="settle-arrow">→</div><div class="settle-badge">₹2,300</div><div class="settle-arrow">→</div><div class="settle-to">Dewaang</div>
+        <div id="sstatus_o9" style="padding:4px 2px 2px"></div></div>
+      <div id="srow_o10" class="settle-row"><div class="settle-num">10</div><span class="source-tag o">O</span><div class="settle-from">Chehak</div><div class="settle-arrow">→</div><div class="settle-badge">₹475</div><div class="settle-arrow">→</div><div class="settle-to">Dewaang</div>
+        <div id="sstatus_o10" style="padding:4px 2px 2px"></div></div>
+      <div id="srow_o11" class="settle-row"><div class="settle-num">11</div><span class="source-tag o">O</span><div class="settle-from">Devansh</div><div class="settle-arrow">→</div><div class="settle-badge">₹155</div><div class="settle-arrow">→</div><div class="settle-to">Dewaang</div>
+        <div id="sstatus_o11" style="padding:4px 2px 2px"></div></div>
+      <div id="srow_o12" class="settle-row"><div class="settle-num">12</div><span class="source-tag o">O</span><div class="settle-from">Kirtan</div><div class="settle-arrow">→</div><div class="settle-badge">₹335</div><div class="settle-arrow">→</div><div class="settle-to">Dewaang</div>
+        <div id="sstatus_o12" style="padding:4px 2px 2px"></div></div>
+      <div id="srow_o13" class="settle-row"><div class="settle-num">13</div>
+        <div id="sstatus_o13" style="padding:4px 2px 2px"></div><span class="source-tag o">O</span><div class="settle-from">Ashutosh</div><div class="settle-arrow">→</div><div class="settle-badge">₹100</div><div class="settle-arrow">→</div><div class="settle-to">Dewaang</div></div>
+      <div id="srow_o14" class="settle-row"><div class="settle-num">14</div>
+        <div id="sstatus_o14" style="padding:4px 2px 2px"></div><span class="source-tag o">O</span><div class="settle-from">Dewaang</div><div class="settle-arrow">→</div><div class="settle-badge">₹245</div><div class="settle-arrow">→</div><div class="settle-to">Priyam</div></div>
+
+      <div style="font-size:11px;font-weight:700;color:var(--yellow);text-transform:uppercase;letter-spacing:0.6px;padding:10px 0 6px">New transactions</div>
+      <div id="srow_m15" class="settle-row"><div class="settle-num">15</div>
+        <div id="sstatus_m15" style="padding:4px 2px 2px"></div><span class="source-tag m">M</span><div class="settle-from">Saloni</div><div class="settle-arrow">→</div><div class="settle-badge">₹100</div><div class="settle-arrow">→</div><div class="settle-to">Devansh</div></div>
+      <div id="srow_m16" class="settle-row"><div class="settle-num">16</div>
+        <div id="sstatus_m16" style="padding:4px 2px 2px"></div><span class="source-tag m">M</span><div class="settle-from">Khushi</div><div class="settle-arrow">→</div><div class="settle-badge">₹350</div><div class="settle-arrow">→</div><div class="settle-to">Devansh</div></div>
+      <div id="srow_m17" class="settle-row"><div class="settle-num">17</div>
+        <div id="sstatus_m17" style="padding:4px 2px 2px"></div><span class="source-tag m">M</span><div class="settle-from">Bharat</div><div class="settle-arrow">→</div><div class="settle-badge">₹540</div><div class="settle-arrow">→</div><div class="settle-to">Devansh</div></div>
+      <div id="srow_m18" class="settle-row"><div class="settle-num">18</div>
+        <div id="sstatus_m18" style="padding:4px 2px 2px"></div><span class="source-tag m">M</span><div class="settle-from">Devansh</div><div class="settle-arrow">→</div><div class="settle-badge">₹370</div><div class="settle-arrow">→</div><div class="settle-to">Priyam</div></div>
+    </div>
+
+    <div style="margin-top:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center">
+      <div style="background:rgba(79,142,247,0.07);border:1px solid rgba(79,142,247,0.2);border-radius:11px;padding:14px">
+        <div style="font-size:11px;color:var(--text2);margin-bottom:4px">Chakrata</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--blue)">₹33,260</div>
+        <div style="font-size:10px;color:var(--text3);margin-top:2px">6 transfers</div>
+      </div>
+      <div style="background:rgba(34,211,165,0.07);border:1px solid rgba(34,211,165,0.2);border-radius:11px;padding:14px">
+        <div style="font-size:11px;color:var(--text2);margin-bottom:4px">Ongoing</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--green)">₹11,435</div>
+        <div style="font-size:10px;color:var(--text3);margin-top:2px">8 transfers</div>
+      </div>
+      <div style="background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.2);border-radius:11px;padding:14px">
+        <div style="font-size:11px;color:var(--text2);margin-bottom:4px">New Txns</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--yellow)">₹1,260</div>
+        <div style="font-size:10px;color:var(--text3);margin-top:2px">4 transfers</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+<div class="footer">⚡ Final Settlement · Every person · Every rupee · All sources combined</div>
+</div>
+
+<style>
+/* ── Settlement dynamic styles ── */
+.settle-row { position: relative; transition: opacity 0.3s; }
+.settle-row.fully-paid { opacity: 0.5; }
+.settle-row.fully-paid .settle-badge { background: rgba(6,214,160,0.1); border-color: rgba(6,214,160,0.2); color: #22d3a5; text-decoration: line-through; }
+
+.settle-status {
+  display: flex; align-items: center; gap: 6px; margin-top: 8px;
+  flex-wrap: wrap;
+}
+.paid-pill {
+  font-size: 10px; font-weight: 700; padding: 2px 9px; border-radius: 20px;
+  background: rgba(6,214,160,0.1); color: #22d3a5;
+  border: 1px solid rgba(6,214,160,0.25);
+}
+.partial-pill {
+  font-size: 10px; font-weight: 700; padding: 2px 9px; border-radius: 20px;
+  background: rgba(245,158,11,0.1); color: #f59e0b;
+  border: 1px solid rgba(245,158,11,0.25);
+}
+.settle-actions-row {
+  display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap;
+}
+.settle-btn {
+  font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 8px;
+  border: 1px solid; cursor: pointer; font-family: inherit; transition: all 0.18s;
+  background: none;
+}
+.settle-btn.full { border-color: rgba(6,214,160,0.4); color: #22d3a5; }
+.settle-btn.full:hover { background: rgba(6,214,160,0.1); }
+.settle-btn.partial { border-color: rgba(245,158,11,0.4); color: #f59e0b; }
+.settle-btn.partial:hover { background: rgba(245,158,11,0.1); }
+.settle-btn.undo { border-color: rgba(248,113,113,0.3); color: #f87171; }
+.settle-btn.undo:hover { background: rgba(248,113,113,0.08); }
+
+/* partial progress bar */
+.partial-bar-wrap { margin-top: 8px; height: 4px; background: #1a2230; border-radius: 2px; overflow: hidden; }
+.partial-bar { height: 100%; background: linear-gradient(90deg, #f59e0b, #22d3a5); border-radius: 2px; transition: width 0.4s; }
+
+/* Modal */
+.settle-modal-bg {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
+  z-index: 300; align-items: flex-end; justify-content: center;
+}
+.settle-modal-bg.open { display: flex; }
+.settle-modal {
+  background: #0d1117; border: 1px solid #253040;
+  border-radius: 20px 20px 0 0;
+  padding: 0 22px 36px; width: 100%; max-width: 480px;
+  animation: slideUpM 0.25s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes slideUpM { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.settle-modal-handle { width: 36px; height: 4px; border-radius: 2px; background: #253040; margin: 12px auto 18px; }
+.settle-modal-title { font-family: 'Space Grotesk',sans-serif; font-size: 16px; font-weight: 700; color: #e2e8f0; margin-bottom: 6px; }
+.settle-modal-sub { font-size: 12px; color: #64748b; margin-bottom: 18px; }
+.settle-modal label { display: block; font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.6px; margin: 14px 0 6px; }
+.settle-modal input, .settle-modal select {
+  width: 100%; background: #161c24; border: 1px solid #253040;
+  color: #e2e8f0; padding: 10px 12px; border-radius: 10px;
+  font-size: 13px; font-family: inherit; outline: none;
+  transition: border-color 0.2s;
+}
+.settle-modal input:focus, .settle-modal select:focus { border-color: #4f8ef7; }
+input[type="date"] { color-scheme: dark; }
+.settle-modal-btns { display: flex; gap: 10px; margin-top: 18px; }
+.smbtn {
+  flex: 1; padding: 12px; border-radius: 10px; border: none;
+  font-family: inherit; font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: all 0.18s;
+}
+.smbtn.cancel { background: #161c24; color: #94a3b8; border: 1px solid #253040; }
+.smbtn.confirm { background: #4f8ef7; color: #fff; }
+.smbtn.confirm:hover { background: #3a7de8; }
+
+.toast-s {
+  position: fixed; bottom: 28px; left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: #0d1117; border: 1px solid #253040; color: #e2e8f0;
+  padding: 10px 20px; border-radius: 30px; font-size: 13px; font-weight: 600;
+  z-index: 999; transition: transform 0.3s ease; pointer-events: none;
+  white-space: nowrap; box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  font-family: 'Inter',sans-serif;
+}
+.toast-s.show { transform: translateX(-50%) translateY(0); }
+</style>
+
+<!-- Settlement modal -->
+<div class="settle-modal-bg" id="settleModal">
+  <div class="settle-modal">
+    <div class="settle-modal-handle"></div>
+    <div class="settle-modal-title" id="smTitle">Mark Payment</div>
+    <div class="settle-modal-sub" id="smSub"></div>
+
+    <div id="smPartialRow" style="display:none">
+      <label>Amount paid (₹)</label>
+      <input type="number" id="smPartialAmt" placeholder="0" min="0"/>
+    </div>
+
+    <label>Date</label>
+    <input type="date" id="smDate"/>
+
+    <label>Payment method / Note</label>
+    <input type="text" id="smNote" placeholder="e.g. GPay, Cash…"/>
+
+    <div class="settle-modal-btns">
+      <button class="smbtn cancel" onclick="closeSettleModal()">Cancel</button>
+      <button class="smbtn confirm" id="smConfirm" onclick="confirmSettle()">✅ Confirm</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-s" id="toastS"></div>
+
+<script>
+// ── Page switcher ──────────────────────────
+function switchPage(name) {
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.page-tab').forEach(function(t) { t.classList.remove('active'); });
+  document.getElementById('page-' + name).classList.add('active');
+  var tabs = document.querySelectorAll('.page-tab');
+  if (name === 'chakrata') tabs[0].classList.add('active');
+  else if (name === 'ongoing') tabs[1].classList.add('active');
+  else tabs[2].classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ── Firebase ──────────────────────────────
+var firebaseConfig = { databaseURL: "https://trip-helper-10270-default-rtdb.firebaseio.com" };
+firebase.initializeApp(firebaseConfig);
+var db = firebase.database();
+
+// ── All 18 transactions ────────────────────
+var ALL_TXNS = [
+  { id:"c1",  num:1,  from:"Saloni",  to:"Khushi",  amt:3218,    src:"C", label:"Chakrata" },
+  { id:"c2",  num:2,  from:"Devansh", to:"Khushi",  amt:8810.50, src:"C", label:"Chakrata" },
+  { id:"c3",  num:3,  from:"Bharat",  to:"Khushi",  amt:1043.50, src:"C", label:"Chakrata" },
+  { id:"c4",  num:4,  from:"Bharat",  to:"Priyam",  amt:3187,    src:"C", label:"Chakrata" },
+  { id:"c5",  num:5,  from:"Chehak",  to:"Priyam",  amt:8580.50, src:"C", label:"Chakrata" },
+  { id:"c6",  num:6,  from:"Dewaang", to:"Priyam",  amt:8420.50, src:"C", label:"Chakrata" },
+  { id:"o7",  num:7,  from:"Saloni",  to:"Dewaang", amt:4220,    src:"O", label:"Ongoing" },
+  { id:"o8",  num:8,  from:"Khushi",  to:"Dewaang", amt:3605,    src:"O", label:"Ongoing" },
+  { id:"o9",  num:9,  from:"Bharat",  to:"Dewaang", amt:2300,    src:"O", label:"Ongoing" },
+  { id:"o10", num:10, from:"Chehak",  to:"Dewaang", amt:475,     src:"O", label:"Ongoing" },
+  { id:"o11", num:11, from:"Devansh", to:"Dewaang", amt:155,     src:"O", label:"Ongoing" },
+  { id:"o12", num:12, from:"Kirtan",  to:"Dewaang", amt:335,     src:"O", label:"Ongoing" },
+  { id:"o13", num:13, from:"Ashutosh",to:"Dewaang", amt:100,     src:"O", label:"Ongoing" },
+  { id:"o14", num:14, from:"Dewaang", to:"Priyam",  amt:245,     src:"O", label:"Ongoing" },
+  { id:"m15", num:15, from:"Saloni",  to:"Devansh", amt:100,     src:"M", label:"New" },
+  { id:"m16", num:16, from:"Khushi",  to:"Devansh", amt:350,     src:"M", label:"New" },
+  { id:"m17", num:17, from:"Bharat",  to:"Devansh", amt:540,     src:"M", label:"New" },
+  { id:"m18", num:18, from:"Devansh", to:"Priyam",  amt:370,     src:"M", label:"New" },
+];
+
+var settleData = {}; // {txnId: {status, paidAmt, date, note, partials:[...]}}
+var pendingModal = null; // {txn, mode}
+
+// ── Load from Firebase ────────────────────
+db.ref("hisaab_settlements").on("value", function(snap) {
+  settleData = snap.val() || {};
+  renderAllSettleRows();
+});
+
+// ── Render all rows ───────────────────────
+function renderAllSettleRows() {
+  ALL_TXNS.forEach(function(txn) {
+    var el = document.getElementById("srow_" + txn.id);
+    if (!el) return;
+    var data = settleData[txn.id] || {};
+    var status = data.status || "pending"; // pending | partial | paid
+    var paidAmt = data.paidAmt || 0;
+    var remaining = Math.max(0, txn.amt - paidAmt);
+
+    // Row class
+    el.className = "settle-row" + (status === "paid" ? " fully-paid" : "");
+
+    // Status section
+    var statusEl = document.getElementById("sstatus_" + txn.id);
+    if (!statusEl) return;
+
+    var html = "";
+    if (status === "paid") {
+      html += '<div class="settle-status"><span class="paid-pill">✅ Fully Paid ' + (data.date ? fmtD(data.date) : "") + '</span>';
+      if (data.note) html += '<span style="font-size:10px;color:#64748b">' + esc(data.note) + '</span>';
+      html += '</div>';
+      html += '<div class="settle-actions-row"><button class="settle-btn undo" onclick="undoPay(\'' + txn.id + '\')">↩ Undo</button></div>';
+    } else if (status === "partial") {
+      var pct = Math.round((paidAmt / txn.amt) * 100);
+      html += '<div class="settle-status">';
+      html += '<span class="partial-pill">⏳ Partial — ₹' + paidAmt.toLocaleString("en-IN") + ' of ₹' + txn.amt.toLocaleString("en-IN") + ' paid (' + pct + '%)</span>';
+      html += '</div>';
+      html += '<div class="partial-bar-wrap"><div class="partial-bar" style="width:' + pct + '%"></div></div>';
+      if (data.partials && data.partials.length) {
+        html += '<div style="margin-top:6px;display:flex;flex-direction:column;gap:3px">';
+        data.partials.forEach(function(p) {
+          html += '<div style="font-size:10px;color:#64748b">· ₹' + p.amt.toLocaleString("en-IN") + ' on ' + fmtD(p.date) + (p.note ? " — " + esc(p.note) : "") + '</div>';
+        });
+        html += '</div>';
+      }
+      html += '<div class="settle-actions-row">';
+      html += '<button class="settle-btn full" onclick="openSettle(\'' + txn.id + '\',\'full\')">✅ Mark Fully Paid</button>';
+      html += '<button class="settle-btn partial" onclick="openSettle(\'' + txn.id + '\',\'partial\')">➕ Add Partial</button>';
+      html += '<button class="settle-btn undo" onclick="undoPay(\'' + txn.id + '\')">↩ Reset</button>';
+      html += '</div>';
+    } else {
+      // pending
+      html += '<div class="settle-actions-row">';
+      html += '<button class="settle-btn full" onclick="openSettle(\'' + txn.id + '\',\'full\')">✅ Mark Paid</button>';
+      html += '<button class="settle-btn partial" onclick="openSettle(\'' + txn.id + '\',\'partial\')">⏳ Partial Paid</button>';
+      html += '</div>';
+    }
+    statusEl.innerHTML = html;
+  });
+}
+
+// ── Open modal ────────────────────────────
+function openSettle(txnId, mode) {
+  var txn = ALL_TXNS.find(function(t) { return t.id === txnId; });
+  if (!txn) return;
+  pendingModal = { txn: txn, mode: mode };
+  var data = settleData[txnId] || {};
+  var remaining = Math.max(0, txn.amt - (data.paidAmt || 0));
+
+  document.getElementById("smTitle").textContent = mode === "full" ? "Mark Fully Paid ✅" : "Add Partial Payment ⏳";
+  document.getElementById("smSub").textContent   = txn.from + " → " + txn.to + " · Total ₹" + txn.amt.toLocaleString("en-IN") + (mode === "partial" ? " · Remaining ₹" + remaining.toLocaleString("en-IN") : "");
+  document.getElementById("smDate").value        = new Date().toISOString().split("T")[0];
+  document.getElementById("smNote").value        = "";
+  document.getElementById("smPartialRow").style.display = mode === "partial" ? "block" : "none";
+  document.getElementById("smPartialAmt").value  = "";
+  document.getElementById("smConfirm").textContent = mode === "full" ? "✅ Confirm Paid" : "➕ Add Partial";
+  document.getElementById("settleModal").classList.add("open");
+}
+
+function closeSettleModal() {
+  document.getElementById("settleModal").classList.remove("open");
+  pendingModal = null;
+}
+
+function confirmSettle() {
+  if (!pendingModal) return;
+  var txn  = pendingModal.txn;
+  var mode = pendingModal.mode;
+  var date = document.getElementById("smDate").value;
+  var note = document.getElementById("smNote").value.trim();
+  var existing = settleData[txn.id] || {};
+
+  if (mode === "full") {
+    db.ref("hisaab_settlements/" + txn.id).set({
+      status: "paid",
+      paidAmt: txn.amt,
+      date: date,
+      note: note,
+      partials: existing.partials || [],
+      ts: Date.now()
+    }).then(function() {
+      showToastS("✅ " + txn.from + " → " + txn.to + " marked paid!");
+      closeSettleModal();
+    });
+  } else {
+    var partialAmt = parseFloat(document.getElementById("smPartialAmt").value);
+    if (!partialAmt || partialAmt <= 0) { showToastS("Enter a valid amount!"); return; }
+    var partials = existing.partials || [];
+    partials.push({ amt: partialAmt, date: date, note: note });
+    var totalPaid = partials.reduce(function(s, p) { return s + p.amt; }, 0);
+    var newStatus = totalPaid >= txn.amt ? "paid" : "partial";
+    db.ref("hisaab_settlements/" + txn.id).set({
+      status: newStatus,
+      paidAmt: Math.min(totalPaid, txn.amt),
+      date: date,
+      note: note,
+      partials: partials,
+      ts: Date.now()
+    }).then(function() {
+      showToastS("⏳ Partial ₹" + partialAmt.toLocaleString("en-IN") + " recorded!");
+      closeSettleModal();
+    });
+  }
+}
+
+function undoPay(txnId) {
+  if (!confirm("Reset payment status for this transfer?")) return;
+  db.ref("hisaab_settlements/" + txnId).remove().then(function() {
+    showToastS("↩ Reset done!");
+  });
+}
+
+function fmtD(iso) { if (!iso) return ""; var p = iso.split("-"); return p[2]+"/"+p[1]+"/"+p[0]; }
+function esc(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function showToastS(msg) {
+  var t = document.getElementById("toastS");
+  t.textContent = msg; t.classList.add("show");
+  setTimeout(function() { t.classList.remove("show"); }, 2800);
+}
+
+// close modal on backdrop click
+document.getElementById("settleModal").addEventListener("click", function(e) {
+  if (e.target === this) closeSettleModal();
+});
+</script>
+
 </body>
 </html>
