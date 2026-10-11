@@ -25,6 +25,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .tab-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
 .tab-btn.active.g{background:var(--green);color:#07090d;border-color:var(--green)}
 .tab-btn.active.y{background:var(--yellow);color:#07090d;border-color:var(--yellow)}
+.tab-btn.active.p{background:var(--purple);color:#fff;border-color:var(--purple)}
 .page{display:none}.page.active{display:block}
 
 /* HERO */
@@ -302,6 +303,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
       <button class="tab-btn active" onclick="go('p1',this)">🏔️ Chakrata</button>
       <button class="tab-btn g"      onclick="go('p2',this)">🔄 Ongoing</button>
       <button class="tab-btn y"      onclick="go('p3',this)">⚡ Final</button>
+      <button class="tab-btn" style="border-color:rgba(167,139,250,0.4);color:#a78bfa" onclick="go('p4',this)">🎯 Simplified</button>
     </div>
   </div>
 </nav>
@@ -966,12 +968,193 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 <div style="text-align:center;padding:32px 16px 0;color:var(--text3);font-size:11px">⚡ Final Settlement · Every rupee · All sources · 18 transfers</div>
 </div>
 
+<!-- ═══════════ PAGE 4: SIMPLIFIED ═══════════ -->
+<div class="page" id="p4">
+
+<div class="hero" style="background:linear-gradient(160deg,#140d2a 0%,var(--bg) 70%)">
+  <div class="hero-icon">🎯</div>
+  <h1 class="hero-title">Simplified <span style="background:linear-gradient(135deg,#a78bfa,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Settlement</span></h1>
+  <p class="hero-sub">Chakrata Trip + Ongoing Dues + New Transactions · All sources combined</p>
+</div>
+
+<div class="stats-wrap">
+  <div class="stats-grid">
+    <div class="stat"><div class="stat-n" style="color:var(--blue)">₹62,726</div><div class="stat-l">Total Trip Spent</div></div>
+    <div class="stat"><div class="stat-n" style="color:var(--green)">₹11,190</div><div class="stat-l">Ongoing Pool</div></div>
+    <div class="stat"><div class="stat-n" style="color:var(--yellow)">₹2,150</div><div class="stat-l">New Transactions</div></div>
+    <div class="stat"><div class="stat-n" style="color:var(--purple)">7</div><div class="stat-l">Simplified Transfers</div></div>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- 1. COMPLETE DEBT PICTURE -->
+<div class="section">
+  <div class="sec-head">
+    <div class="sec-icon" style="background:rgba(79,142,247,0.12)">📋</div>
+    <div class="sec-title">Complete Debt Picture — Every Individual Debt</div>
+  </div>
+  <div class="sec-body" style="padding:0">
+    <div style="overflow-x:auto">
+    <table class="ledger-table">
+      <thead><tr><th>Owes</th><th>Receives</th><th style="text-align:right">Amount</th><th>Source</th></tr></thead>
+      <tbody>
+        <tr><td style="font-weight:700;color:var(--red)">Saloni</td><td style="font-weight:700;color:var(--green)">Khushi</td><td class="lamt neg">₹9,218</td><td><span class="badge" style="background:rgba(79,142,247,0.1);color:var(--blue);border:1px solid rgba(79,142,247,0.2)">Chakrata Trip</span></td></tr>
+        <tr><td style="font-weight:700;color:var(--red)">Devansh</td><td style="font-weight:700;color:var(--green)">Khushi</td><td class="lamt neg">₹8,810.50</td><td><span class="badge" style="background:rgba(79,142,247,0.1);color:var(--blue);border:1px solid rgba(79,142,247,0.2)">Chakrata Trip</span></td></tr>
+        <tr><td style="font-weight:700;color:var(--red)">Bharat</td><td style="font-weight:700;color:var(--green)">Khushi</td><td class="lamt neg">₹1,043.50</td><td><span class="badge" style="background:rgba(79,142,247,0.1);color:var(--blue);border:1px solid rgba(79,142,247,0.2)">Chakrata Trip</span></td></tr>
+        <tr><td style="font-weight:700;color:var(--red)">Bharat</td><td style="font-weight:700;color:var(--green)">Priyam</td><td class="lamt neg">₹3,187</td><td><span class="badge" style="background:rgba(79,142,247,0.1);color:var(--blue);border:1px solid rgba(79,142,247,0.2)">Chakrata Trip</span></td></tr>
+        <tr><td style="font-weight:700;color:var(--red)">Chehak</td><td style="font-weight:700;color:var(--green)">Priyam</td><td class="lamt neg">₹8,580.50</td><td><span class="badge" style="background:rgba(79,142,247,0.1);color:var(--blue);border:1px solid rgba(79,142,247,0.2)">Chakrata Trip</span></td></tr>
+        <tr style="opacity:0.5"><td style="font-weight:700;text-decoration:line-through;color:var(--text2)">Dewaang</td><td style="font-weight:700;color:var(--green)">Priyam</td><td class="lamt" style="text-align:right;text-decoration:line-through;color:var(--text2)">₹8,421</td><td><span class="badge done">✅ PAID</span></td></tr>
+        <tr><td style="font-weight:700;color:var(--red)">Saloni</td><td style="font-weight:700;color:var(--green)">Dewaang</td><td class="lamt neg">₹4,220</td><td><span class="badge" style="background:rgba(34,211,165,0.1);color:var(--green);border:1px solid rgba(34,211,165,0.2)">Ongoing</span></td></tr>
+        <tr><td style="font-weight:700;color:var(--red)">Khushi</td><td style="font-weight:700;color:var(--green)">Dewaang</td><td class="lamt neg">₹3,605</td><td><span class="badge" style="background:rgba(34,211,165,0.1);color:var(--green);border:1px solid rgba(34,211,165,0.2)">Ongoing</span></td></tr>
+        <tr><td style="font-weight:700;color:var(--red)">Bharat</td><td style="font-weight:700;color:var(--green)">Dewaang</td><td class="lamt neg">₹2,300</td><td><span class="badge" style="background:rgba(34,211,165,0.1);color:var(--green);border:1px solid rgba(34,211,165,0.2)">Ongoing</span></td></tr>
+        <tr><td style="font-weight:700;color:var(--red)">Chehak</td><td style="font-weight:700;color:var(--green)">Dewaang</td><td class="lamt neg">₹475</td><td><span class="badge" style="background:rgba(34,211,165,0.1);color:var(--green);border:1px solid rgba(34,211,165,0.2)">Ongoing</span></td></tr>
+        <tr><td style="font-weight:700;color:var(--red)">Devansh</td><td style="font-weight:700;color:var(--green)">Dewaang</td><td class="lamt neg">₹155</td><td><span class="badge" style="background:rgba(34,211,165,0.1);color:var(--green);border:1px solid rgba(34,211,165,0.2)">Ongoing</span></td></tr>
+        <tr><td style="font-weight:700;color:var(--red)">Kirtan</td><td style="font-weight:700;color:var(--green)">Dewaang</td><td class="lamt neg">₹335</td><td><span class="badge" style="background:rgba(34,211,165,0.1);color:var(--green);border:1px solid rgba(34,211,165,0.2)">Ongoing</span></td></tr>
+        <tr style="opacity:0.5"><td style="font-weight:700;text-decoration:line-through;color:var(--text2)">Dewaang</td><td style="font-weight:700;color:var(--green)">Priyam</td><td class="lamt" style="text-align:right;text-decoration:line-through;color:var(--text2)">₹245</td><td><span class="badge done">✅ PAID</span></td></tr>
+        <tr><td style="font-weight:700;color:var(--red)">Devansh</td><td style="font-weight:700;color:var(--green)">Priyam</td><td class="lamt neg">₹1,160</td><td><span class="badge" style="background:rgba(245,158,11,0.1);color:var(--yellow);border:1px solid rgba(245,158,11,0.2)">New Txn</span></td></tr>
+        <tr><td style="font-weight:700;color:var(--red)">Saloni</td><td style="font-weight:700;color:var(--green)">Devansh</td><td class="lamt neg">₹100</td><td><span class="badge" style="background:rgba(245,158,11,0.1);color:var(--yellow);border:1px solid rgba(245,158,11,0.2)">New Txn</span></td></tr>
+        <tr><td style="font-weight:700;color:var(--red)">Khushi</td><td style="font-weight:700;color:var(--green)">Devansh</td><td class="lamt neg">₹350</td><td><span class="badge" style="background:rgba(245,158,11,0.1);color:var(--yellow);border:1px solid rgba(245,158,11,0.2)">New Txn</span></td></tr>
+        <tr><td style="font-weight:700;color:var(--red)">Bharat</td><td style="font-weight:700;color:var(--green)">Devansh</td><td class="lamt neg">₹350</td><td><span class="badge" style="background:rgba(245,158,11,0.1);color:var(--yellow);border:1px solid rgba(245,158,11,0.2)">New Txn</span></td></tr>
+        <tr><td style="font-weight:700;color:var(--red)">Bharat</td><td style="font-weight:700;color:var(--green)">Devansh</td><td class="lamt neg">₹190</td><td><span class="badge" style="background:rgba(245,158,11,0.1);color:var(--yellow);border:1px solid rgba(245,158,11,0.2)">New Txn</span></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;padding:14px 20px 4px;border-top:1px solid var(--border);margin-top:4px">
+      <span class="badge" style="background:rgba(79,142,247,0.1);color:var(--blue);border:1px solid rgba(79,142,247,0.2)">Chakrata Trip</span>
+      <span class="badge" style="background:rgba(34,211,165,0.1);color:var(--green);border:1px solid rgba(34,211,165,0.2)">Ongoing</span>
+      <span class="badge" style="background:rgba(245,158,11,0.1);color:var(--yellow);border:1px solid rgba(245,158,11,0.2)">New Txn</span>
+      <span class="badge done">✅ PAID — already done, ignore</span>
+    </div>
+  </div>
+</div>
+
+<!-- 2. NET BALANCES -->
+<div class="section">
+  <div class="sec-head">
+    <div class="sec-icon" style="background:rgba(167,139,250,0.12)">⚖️</div>
+    <div class="sec-title">Final Net Balances — After All Sources Combined</div>
+  </div>
+  <div class="sec-body" style="padding:0">
+    <div style="overflow-x:auto">
+    <table class="ledger-table">
+      <thead><tr><th>Person</th><th style="text-align:right">Net Balance</th><th style="text-align:center">Direction</th></tr></thead>
+      <tbody>
+        <tr style="background:rgba(34,211,165,0.04)"><td><div class="pcell"><span class="av c5">P</span><strong>Priyam</strong></div></td><td class="lamt pos" style="font-size:17px;font-weight:800">+₹12,927.50</td><td style="text-align:center"><span class="badge get">RECEIVES</span></td></tr>
+        <tr style="background:rgba(167,139,250,0.04)"><td><div class="pcell"><span class="av c6">Dw</span><strong>Dewaang</strong></div></td><td class="lamt" style="font-size:17px;font-weight:800;color:var(--purple);text-align:right">+₹11,090</td><td style="text-align:center"><span class="badge" style="background:rgba(167,139,250,0.1);color:var(--purple);border:1px solid rgba(167,139,250,0.2)">RECEIVES</span></td></tr>
+        <tr style="background:rgba(79,142,247,0.04)"><td><div class="pcell"><span class="av c1">K</span><strong>Khushi</strong></div></td><td class="lamt pos" style="font-size:17px;font-weight:800">+₹9,117</td><td style="text-align:center"><span class="badge get">RECEIVES</span></td></tr>
+        <tr><td><div class="pcell"><span class="av c3">D</span>Devansh</div></td><td class="lamt neg" style="font-size:17px;font-weight:800">-₹9,135.50</td><td style="text-align:center"><span class="badge owe">OWES</span></td></tr>
+        <tr><td><div class="pcell"><span class="av c4">C</span>Chehak</div></td><td class="lamt neg" style="font-size:17px;font-weight:800">-₹9,055.50</td><td style="text-align:center"><span class="badge owe">OWES</span></td></tr>
+        <tr><td><div class="pcell"><span class="av c0">B</span>Bharat</div></td><td class="lamt neg" style="font-size:17px;font-weight:800">-₹7,070.50</td><td style="text-align:center"><span class="badge owe">OWES</span></td></tr>
+        <tr><td><div class="pcell"><span class="av c0">S</span>Saloni</div></td><td class="lamt neg" style="font-size:17px;font-weight:800">-₹7,538</td><td style="text-align:center"><span class="badge owe">OWES</span></td></tr>
+        <tr><td><div class="pcell"><span class="av c2">K</span>Kirtan</div></td><td class="lamt neg" style="font-size:17px;font-weight:800">-₹335</td><td style="text-align:center"><span class="badge owe">OWES</span></td></tr>
+        <tr style="background:rgba(34,211,165,0.05)"><td colspan="3" style="text-align:center;padding:12px;font-size:13px;font-weight:700;color:var(--green)">✓ &nbsp; Sum of positives ₹33,134.50 = Sum of negatives ₹33,134.50 &nbsp; — Perfectly balanced</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+<!-- 3. THE 7 BIG TRANSFERS -->
+<div class="section">
+  <div class="sec-head">
+    <div class="sec-icon" style="background:rgba(167,139,250,0.15)">🎯</div>
+    <div class="sec-title">Final Simplified Settlement — 7 Transfers</div>
+  </div>
+  <div class="sec-body">
+
+    <style>
+    .sr{display:flex;align-items:center;gap:12px;padding:20px 22px;border-radius:16px;margin-bottom:12px;border:2.5px solid;transition:all 0.2s;cursor:default}
+    .sr:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,0,0,0.15)}
+    .sr-num{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0}
+    .sr-from{font-size:20px;font-weight:800;flex:1}
+    .sr-arrow{font-size:26px;flex-shrink:0}
+    .sr-to{font-size:20px;font-weight:800;flex:1;text-align:center}
+    .sr-amt{font-family:"DM Mono",monospace;font-size:22px;font-weight:800;padding:9px 18px;border-radius:12px;border:2.5px solid;flex-shrink:0;white-space:nowrap}
+    .sr.tp{background:#f0fdf4;border-color:#86efac}
+    .sr.tp .sr-num{background:#dcfce7;color:#166534}
+    .sr.tp .sr-from{color:#14532d}
+    .sr.tp .sr-arrow{color:#16a34a}
+    .sr.tp .sr-to{color:#166534}
+    .sr.tp .sr-amt{background:#dcfce7;border-color:#86efac;color:#15803d}
+    .sr.tk{background:#eff6ff;border-color:#93c5fd}
+    .sr.tk .sr-num{background:#dbeafe;color:#1d4ed8}
+    .sr.tk .sr-from{color:#1e3a5f}
+    .sr.tk .sr-arrow{color:#2563eb}
+    .sr.tk .sr-to{color:#1d4ed8}
+    .sr.tk .sr-amt{background:#dbeafe;border-color:#93c5fd;color:#1d4ed8}
+    .sr.td{background:#faf5ff;border-color:#c4b5fd}
+    .sr.td .sr-num{background:#ede9fe;color:#7c3aed}
+    .sr.td .sr-from{color:#3b0764}
+    .sr.td .sr-arrow{color:#7c3aed}
+    .sr.td .sr-to{color:#7c3aed}
+    .sr.td .sr-amt{background:#ede9fe;border-color:#c4b5fd;color:#7c3aed}
+    .sr-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;margin:18px 0 10px 4px}
+    </style>
+
+    <div class="sr-label" style="color:#166534">→ Paying Priyam</div>
+    <div class="sr tp"><div class="sr-num">1</div><div class="sr-from">Devansh</div><div class="sr-arrow">→</div><div class="sr-to">Priyam</div><div class="sr-amt">₹9,135.50</div></div>
+    <div class="sr tp"><div class="sr-num">2</div><div class="sr-from">Chehak</div><div class="sr-arrow">→</div><div class="sr-to">Priyam</div><div class="sr-amt">₹3,792</div></div>
+
+    <div class="sr-label" style="color:#1d4ed8">→ Paying Khushi</div>
+    <div class="sr tk"><div class="sr-num">3</div><div class="sr-from">Saloni</div><div class="sr-arrow">→</div><div class="sr-to">Khushi</div><div class="sr-amt">₹1,711.50</div></div>
+    <div class="sr tk"><div class="sr-num">4</div><div class="sr-from">Bharat</div><div class="sr-arrow">→</div><div class="sr-to">Khushi</div><div class="sr-amt">₹7,070.50</div></div>
+    <div class="sr tk"><div class="sr-num">5</div><div class="sr-from">Kirtan</div><div class="sr-arrow">→</div><div class="sr-to">Khushi</div><div class="sr-amt">₹335</div></div>
+
+    <div class="sr-label" style="color:#7c3aed">→ Paying Dewaang</div>
+    <div class="sr td"><div class="sr-num">6</div><div class="sr-from">Saloni</div><div class="sr-arrow">→</div><div class="sr-to">Dewaang</div><div class="sr-amt">₹5,826.50</div></div>
+    <div class="sr td"><div class="sr-num">7</div><div class="sr-from">Chehak</div><div class="sr-arrow">→</div><div class="sr-to">Dewaang</div><div class="sr-amt">₹5,263.50</div></div>
+
+    <!-- Receiver totals -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px">
+      <div style="background:#f0fdf4;border:2.5px solid #86efac;border-radius:14px;padding:18px;text-align:center">
+        <div style="font-size:12px;font-weight:700;color:#166534;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">Priyam receives</div>
+        <div style="font-family:'DM Mono',monospace;font-size:24px;font-weight:800;color:#15803d">₹12,927.50</div>
+      </div>
+      <div style="background:#eff6ff;border:2.5px solid #93c5fd;border-radius:14px;padding:18px;text-align:center">
+        <div style="font-size:12px;font-weight:700;color:#1d4ed8;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">Khushi receives</div>
+        <div style="font-family:'DM Mono',monospace;font-size:24px;font-weight:800;color:#1d4ed8">₹9,117</div>
+      </div>
+      <div style="background:#faf5ff;border:2.5px solid #c4b5fd;border-radius:14px;padding:18px;text-align:center">
+        <div style="font-size:12px;font-weight:700;color:#7c3aed;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">Dewaang receives</div>
+        <div style="font-family:'DM Mono',monospace;font-size:24px;font-weight:800;color:#7c3aed">₹11,090</div>
+      </div>
+    </div>
+
+    <!-- Grand total -->
+    <div style="background:#fef9c3;border:2.5px solid #fde68a;border-radius:14px;padding:18px 22px;display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+      <div>
+        <div style="font-size:15px;font-weight:800;color:#92400e">Grand Total · 7 transfers</div>
+        <div style="font-size:12px;color:#b45309;margin-top:4px">✓ Sum of positives = Sum of negatives — Perfectly balanced</div>
+      </div>
+      <div style="font-family:'DM Mono',monospace;font-size:28px;font-weight:800;color:#b45309">₹33,134.50</div>
+    </div>
+
+    <!-- Already settled note -->
+    <div style="margin-top:14px;padding:14px 18px;background:rgba(34,211,165,0.05);border:1.5px solid rgba(34,211,165,0.2);border-radius:12px">
+      <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:8px">✅ Already settled — do NOT pay again:</div>
+      <div style="font-size:13px;color:var(--text2);display:flex;flex-direction:column;gap:5px">
+        <span>· <span style="text-decoration:line-through">Dewaang paid Priyam ₹8,421</span> — Chakrata ✓</span>
+        <span>· <span style="text-decoration:line-through">Dewaang paid Priyam ₹245</span> — Ongoing ✓</span>
+        <span>· <span style="text-decoration:line-through">Saloni paid Khushi ₹6,000</span> — Chakrata prepay ✓</span>
+      </div>
+    </div>
+
+    <div style="text-align:center;font-size:11px;color:var(--text3);margin-top:16px;letter-spacing:0.5px">✦ Hisaab Final · Verified · FairSplit + Claude · Oct 2026 ✦</div>
+  </div>
+</div>
+
+</div>
+<div style="text-align:center;padding:32px 16px 0;color:var(--text3);font-size:11px">🎯 Simplified Settlement · 7 transfers · Perfectly balanced · Oct 2026</div>
+</div>
+
 <script>
 function go(id, btn) {
   document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});
   document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});
   document.getElementById(id).classList.add('active');
   btn.classList.add('active');
+  if (id==='p4') btn.style.background='#a78bfa', btn.style.color='#fff', btn.style.borderColor='#a78bfa';
   window.scrollTo(0,0);
 }
 </script>
