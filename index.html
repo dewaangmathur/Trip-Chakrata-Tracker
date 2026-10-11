@@ -192,105 +192,140 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 
 /* ── MOBILE ── */
 @media(max-width:600px){
-  /* Nav — scrollable tabs */
+
+  /* ── NAV ── */
   .nav-inner{padding:0 10px;gap:6px;height:50px}
-  .logo{font-size:14px}
+  .logo{font-size:13px}
   .nav-tabs-wrap{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
   .nav-tabs-wrap::-webkit-scrollbar{display:none}
-  .tab-btn{padding:6px 12px;font-size:11px;white-space:nowrap;flex-shrink:0}
+  .tab-btn{padding:6px 11px;font-size:11px;white-space:nowrap;flex-shrink:0}
 
-  /* Content */
-  .content{padding:0 10px;gap:16px}
+  /* ── LAYOUT ── */
+  .content{padding:0 10px;gap:14px}
   .sec-body{padding:12px 12px}
-  .sec-head{padding:14px 14px 10px}
+  .sec-head{padding:13px 13px 10px;gap:8px}
+  .sec-icon{width:28px;height:28px;font-size:13px}
+  .sec-title{font-size:14px}
 
-  /* Hero */
-  .hero{padding:32px 14px 28px}
-  .hero-icon{font-size:36px;margin-bottom:10px}
-  .stats-wrap{padding:0 10px}
+  /* ── HERO ── */
+  .hero{padding:28px 14px 24px}
+  .hero-icon{font-size:34px;margin-bottom:10px}
+  .hero-title{font-size:22px}
+  .hero-sub{font-size:12px}
+  .stats-wrap{padding:0 10px;margin-top:-22px}
+  .stat{padding:13px 10px}
+  .stat-n{font-size:17px}
+  .stat-l{font-size:9px}
 
-  /* Expense rows — stack amount below */
-  .exp-row{flex-wrap:wrap;gap:8px}
-  .exp-icon{width:28px;height:28px;font-size:12px}
-  .exp-amt{margin-left:36px;font-size:13px}
+  /* ── PAGE 1 — EXPENSE ROWS ── */
+  .exp-row{flex-wrap:wrap;gap:6px;padding:9px 10px}
+  .exp-icon{width:28px;height:28px;font-size:12px;flex-shrink:0}
+  .exp-what{font-size:12px}
+  .exp-who{font-size:10px}
+  .exp-exc{font-size:9px}
+  .exp-amt{font-size:13px;margin-left:0;width:100%;text-align:right}
+  .day-label{font-size:10px;padding:10px 0 5px}
 
-  /* Shares grid — 2 cols */
+  /* Shares grid — 2 col */
   .shares-grid{grid-template-columns:1fr 1fr}
   .share-amt{font-size:16px}
+  .share-sub{font-size:10px}
 
-  /* Paid bars — tighter */
-  .paid-name{width:56px;font-size:12px}
-  .paid-val{width:60px;font-size:11px}
+  /* Paid bars */
+  .paid-name{width:54px;font-size:11px}
+  .paid-val{width:58px;font-size:11px}
   .paid-pct{width:28px;font-size:10px}
 
-  /* Receipt — key fixes */
-  .receipt-banner{padding:14px 14px;gap:10px}
-  .receipt-banner-icon{font-size:22px}
-  .receipt-banner-title{font-size:14px}
-  .receipt-banner-sub{font-size:11px}
-  .receipt-body{padding:12px 10px 10px}
+  /* Exceptions */
+  .exc-text{font-size:12px}
 
-  /* Hide col labels on mobile, let rows speak */
+  /* ── RECEIPT (pages 1 & 4) ── */
+  .receipt-banner{padding:13px 13px;gap:9px}
+  .receipt-banner-icon{font-size:20px}
+  .receipt-banner-title{font-size:13px}
+  .receipt-banner-sub{font-size:10px}
+  .receipt-body{padding:10px 8px 10px}
   .receipt-col-labels{display:none}
 
-  /* Transaction rows — stack into 2 lines */
-  .txn-row{
-    flex-wrap:wrap;
-    gap:6px;
-    padding:10px 10px;
-  }
-  .txn-from{
-    width:auto;
-    font-size:13px;
-    flex-shrink:0;
-  }
-  .txn-arrow{width:16px;font-size:14px}
-  .txn-to{font-size:13px;flex:1;min-width:60px}
-  .txn-src{flex-shrink:0}
-  .txn-amt{
-    font-size:14px;
-    padding:3px 9px;
-    margin-left:auto;
-  }
+  .txn-row{flex-wrap:wrap;gap:6px;padding:9px 10px;margin-bottom:6px;border-radius:10px}
+  .txn-from{font-size:14px;font-weight:800;width:auto;flex-shrink:0}
+  .txn-arrow{font-size:14px;width:14px}
+  .txn-to{font-size:14px;font-weight:800;flex:1}
+  .txn-src{font-size:9px;padding:1px 6px}
+  .txn-amt{font-size:13px;padding:3px 8px;margin-left:auto}
+  .receipt-section-label{font-size:10px;margin:10px 0 5px}
+  .receipt-summary{grid-template-columns:1fr;gap:7px}
+  .rsumbox{padding:9px}
+  .rsumbox-n{font-size:14px}
 
-  /* Receipt section labels */
-  .receipt-section-label{font-size:10px;margin:10px 0 6px}
-
-  /* Receipt summary 3 boxes → stack */
-  .receipt-summary{grid-template-columns:1fr;gap:8px}
-  .rsumbox{padding:10px}
-  .rsumbox-n{font-size:15px}
-
-  /* Summary boxes */
+  /* ── PAGE 1 SETTLEMENT SUMMARY ── */
   .sum-grid{grid-template-columns:1fr}
   .sum-box-amt{font-size:22px}
 
-  /* Ledger table — scrollable */
+  /* ── PAGE 2 LEDGER ── */
   .ledger-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -12px;padding:0 12px}
-  .ledger-table{min-width:380px;font-size:12px}
-  .ledger-table th,.ledger-table td{padding:8px 8px}
-  .pcell{gap:6px}
-  .av{width:22px;height:22px;font-size:9px}
+  .ledger-table{min-width:360px;font-size:11px}
+  .ledger-table th,.ledger-table td{padding:7px 7px}
+  .pcell{gap:5px}
+  .av{width:20px;height:20px;font-size:8px}
+  .badge{font-size:9px;padding:2px 6px}
 
-  /* Per-person v2 cards */
-  .ps2-head{padding:13px 14px;gap:10px}
-  .ps2-av{width:34px;height:34px;font-size:13px}
-  .ps2-name{font-size:14px}
-  .ps2-sub{font-size:11px}
-  .ps2-badge{font-size:14px}
-  .ps2-body{padding:0 14px 12px}
-  .ps2-item{padding:8px 10px;gap:8px}
-  .ps2-arrow{font-size:14px}
+  /* ── PAGE 3 PER-PERSON ── */
+  .ps2-head{padding:12px 13px;gap:9px;flex-wrap:wrap}
+  .ps2-av{width:32px;height:32px;font-size:12px}
+  .ps2-name{font-size:13px}
+  .ps2-sub{font-size:10px}
+  .ps2-badge{font-size:13px;flex-shrink:0}
+  .ps2-body{padding:0 13px 12px}
+  .ps2-section-label{font-size:9px}
+  .ps2-item{padding:8px 10px;gap:7px;flex-wrap:nowrap}
+  .ps2-arrow{font-size:13px;flex-shrink:0}
   .ps2-person{font-size:12px}
   .ps2-reason{font-size:10px}
   .ps2-amt{font-size:13px}
-  .ps2-net{padding:9px 12px}
-  .ps2-net-label{font-size:11px}
-  .ps2-net-amt{font-size:16px}
+  .ps2-src{font-size:9px;padding:1px 5px}
+  .ps2-net{padding:9px 11px}
+  .ps2-net-label{font-size:10px}
+  .ps2-net-amt{font-size:15px}
 
-  /* Ongoing new txn rows */
-  .exp-who{font-size:10px}
-  .exp-who span{font-size:11px}
+  /* ── PAGE 4 — BIG SETTLE ROWS ── */
+  .sr{
+    flex-wrap:wrap;
+    padding:13px 13px;
+    gap:8px;
+    border-radius:12px;
+    margin-bottom:8px;
+  }
+  .sr-num{width:28px;height:28px;border-radius:8px;font-size:12px;flex-shrink:0}
+  .sr-from{font-size:15px;font-weight:800;flex:1;min-width:60px}
+  .sr-arrow{font-size:18px;flex-shrink:0}
+  .sr-to{font-size:15px;font-weight:800;flex:1;text-align:left}
+  .sr-amt{
+    font-size:16px;
+    padding:6px 12px;
+    border-radius:9px;
+    width:100%;
+    text-align:center;
+    margin-top:2px;
+  }
+  .sr-label{font-size:10px;margin:14px 0 8px 2px}
+
+  /* Page 4 receiver boxes — stack */
+  .p4-recv-grid{grid-template-columns:1fr !important}
+
+  /* Page 4 exp-card-big */
+  .exp-card-big{border-radius:13px;margin-bottom:10px}
+  .ecb-head{padding:13px 14px;gap:10px;flex-wrap:wrap}
+  .ecb-av{width:36px;height:36px;font-size:13px}
+  .ecb-name{font-size:15px}
+  .ecb-sub{font-size:10px}
+  .ecb-badge{font-size:15px;width:100%}
+  .ecb-body{padding:12px 14px}
+  .ecb-action{padding:10px 12px;gap:10px;border-radius:10px;margin-bottom:8px}
+  .ecb-action-icon{font-size:18px}
+  .ecb-action-title{font-size:13px}
+  .ecb-action-detail{font-size:10px}
+  .ecb-action-amt{font-size:16px}
 }
 </style>
 </head>
@@ -1106,7 +1141,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     <div class="sr td"><div class="sr-num">7</div><div class="sr-from">Chehak</div><div class="sr-arrow">→</div><div class="sr-to">Dewaang</div><div class="sr-amt">₹5,263.50</div></div>
 
     <!-- Receiver totals -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px">
+    <div class="p4-recv-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px">
       <div style="background:#f0fdf4;border:2.5px solid #86efac;border-radius:14px;padding:18px;text-align:center">
         <div style="font-size:12px;font-weight:700;color:#166534;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">Priyam receives</div>
         <div style="font-family:'DM Mono',monospace;font-size:24px;font-weight:800;color:#15803d">₹12,927.50</div>
